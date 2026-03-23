@@ -1,4 +1,4 @@
-package com.hrm.project_spring.dto;
+package com.hrm.project_spring.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

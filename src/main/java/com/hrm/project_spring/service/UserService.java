@@ -1,8 +1,8 @@
 package com.hrm.project_spring.service;
 
-import com.hrm.project_spring.dto.PageResponse;
-import com.hrm.project_spring.dto.UserRequest;
-import com.hrm.project_spring.dto.UserResponse;
+import com.hrm.project_spring.dto.response.PageResponse;
+import com.hrm.project_spring.dto.request.UserRequest;
+import com.hrm.project_spring.dto.response.UserResponse;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

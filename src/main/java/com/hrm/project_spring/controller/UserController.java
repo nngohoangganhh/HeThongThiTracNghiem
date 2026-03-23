@@ -1,9 +1,9 @@
 package com.hrm.project_spring.controller;
 
-import com.hrm.project_spring.dto.AuthResponse;
-import com.hrm.project_spring.dto.LoginRequest;
-import com.hrm.project_spring.dto.UserRequest;
-import com.hrm.project_spring.dto.UserResponse;
+import com.hrm.project_spring.dto.response.AuthResponse;
+import com.hrm.project_spring.dto.request.LoginRequest;
+import com.hrm.project_spring.dto.request.UserRequest;
+import com.hrm.project_spring.dto.response.UserResponse;
 import com.hrm.project_spring.service.AuthSerice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
