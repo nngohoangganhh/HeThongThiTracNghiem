@@ -122,6 +122,7 @@ public class ExamService {
                 .createdAt(exam.getCreatedAt())
                 .build();
     }
+
     // Gán student vào exam //
     public Set<User> getStudents(Long examId) {
         Exam exam = examRepository.findById(examId)
