@@ -1,8 +1,9 @@
-package com.hrm.project_spring.dto.request;
+package com.hrm.project_spring.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -12,4 +13,5 @@ public class UserRequest {
     private String password;
     private String email;
     private String fullName;
+    private Set<Long> roleIds;
 }

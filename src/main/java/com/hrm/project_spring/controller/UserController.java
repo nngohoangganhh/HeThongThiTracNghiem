@@ -1,43 +1,47 @@
 package com.hrm.project_spring.controller;
 
-import com.hrm.project_spring.dto.response.AuthResponse;
-import com.hrm.project_spring.dto.request.LoginRequest;
-import com.hrm.project_spring.dto.request.UserRequest;
-import com.hrm.project_spring.dto.response.UserResponse;
-import com.hrm.project_spring.service.AuthSerice;
+import com.hrm.project_spring.dto.common.PageResponse;
+import com.hrm.project_spring.dto.user.UserRequest;
+import com.hrm.project_spring.dto.user.UserResponse;
+import com.hrm.project_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
+
 public class UserController {
 
-    private final AuthSerice authService;
-
-    // Optional: Keep register so we have a way to create a user for testing
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody UserRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    private final UserService userService;
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @GetMapping
+    public ResponseEntity<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        return ResponseEntity.ok(userService.getAllUsers(pageNo, pageSize));
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
-    
-    @PostMapping("/logout")
-    public ResponseEntity<AuthResponse> logout() {
-        return ResponseEntity.ok(authService.logout());
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.createUser(request));
     }
-
-    @GetMapping("/profile")
-    public ResponseEntity<UserResponse> getProfile() {
-        return ResponseEntity.ok(authService.getProfile());
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

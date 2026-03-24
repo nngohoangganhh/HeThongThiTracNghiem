@@ -75,7 +75,7 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = secretKey.getBytes();
         if (keyBytes.length < 32) {
-            // HS256 requires at least 256 bits (32 bytes)
+
             byte[] padded = new byte[32];
             System.arraycopy(keyBytes, 0, padded, 0, keyBytes.length);
             return Keys.hmacShaKeyFor(padded);

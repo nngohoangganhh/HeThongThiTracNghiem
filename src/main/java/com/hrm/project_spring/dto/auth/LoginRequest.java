@@ -1,4 +1,4 @@
-package com.hrm.project_spring.dto.request;
+package com.hrm.project_spring.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

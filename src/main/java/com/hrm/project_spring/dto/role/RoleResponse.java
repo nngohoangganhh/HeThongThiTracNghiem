@@ -1,4 +1,4 @@
-package com.hrm.project_spring.dto.response;
+package com.hrm.project_spring.dto.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    private String token;
-    private String message;
-    private String username;
+public class RoleResponse {
+    private Long id;
+    private String name;
+    private String description;
 }

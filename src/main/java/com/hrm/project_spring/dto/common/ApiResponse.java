@@ -1,4 +1,4 @@
-package com.hrm.project_spring.dto.response;
+package com.hrm.project_spring.dto.common;
 
 public class ApiResponse <T> {
     private boolean success;
@@ -6,12 +6,11 @@ public class ApiResponse <T> {
     private T data;
     private int status;
 
-
-    public ApiResponse(boolean success, String message, T data, int status) {
+     public ApiResponse(boolean success, int status, String message, T data) {
         this.success = success;
+        this.status = status;
         this.message = message;
         this.data = data;
-        this.status = status;
     }
 
     public boolean isSuccess() {

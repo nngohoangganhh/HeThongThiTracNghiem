@@ -5,9 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ProjectSpringApplication {
-
     public static void main(String[] args) {
+        System.out.println("HỆ THỐNG ĐANG CHẠY VUI LÒNG ĐỢI");
         SpringApplication.run(ProjectSpringApplication.class, args);
+        System.out.println("HỆ THỐNG ĐÃ CHẠY THÀNH CÔNG CẢM ƠN BẠN ĐÃ ĐỢI");
     }
 
 }

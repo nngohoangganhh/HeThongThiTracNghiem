@@ -1,9 +1,9 @@
 package com.hrm.project_spring.service;
 
-import com.hrm.project_spring.dto.response.AuthResponse;
-import com.hrm.project_spring.dto.request.LoginRequest;
-import com.hrm.project_spring.dto.request.UserRequest;
-import com.hrm.project_spring.dto.response.UserResponse;
+import com.hrm.project_spring.dto.auth.AuthResponse;
+import com.hrm.project_spring.dto.auth.LoginRequest;
+import com.hrm.project_spring.dto.user.UserRequest;
+import com.hrm.project_spring.dto.user.UserResponse;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.repository.UserRepository;
 import com.hrm.project_spring.security.JwtService;
@@ -15,13 +15,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class AuthSerice {
+public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Autowired
     @Lazy
     private final JwtService jwtService;
@@ -29,10 +31,10 @@ public class AuthSerice {
 
     public AuthResponse register(UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Username already exists");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
         var user = User.builder()
@@ -50,7 +52,6 @@ public class AuthSerice {
         return AuthResponse.builder()
                 .token(jwtToken)
                 .message("User registered successfully")
-                .username(user.getUsername())
                 .build();
     }
 
@@ -61,37 +62,36 @@ public class AuthSerice {
                         request.getPassword()
                 )
         );
-        
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-                
         var jwtToken = jwtService.generateToken(user);
-        
         return AuthResponse.builder()
                 .token(jwtToken)
                 .message("User logged in successfully")
-                .username(user.getUsername())
                 .build();
     }
-
     public UserResponse getProfile() {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "User not found"));
 
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
-                .status(user.getStatus())
-                .createdAt(user.getCreatedAt())
-                .build();
+     UserResponse response = new UserResponse();
+     response.setId(user.getId());
+     response.setUsername(user.getUsername());
+     response.setEmail(user.getEmail());
+     response.setFullName(user.getFullName());
+     response.setStatus(user.getStatus());
+     response.setCreatedAt(user.getCreatedAt());
+
+     response.setRoles(
+            user.getRoles()
+                .stream()
+                .map(role -> role.getName())
+                .toList());
+     return response;
     }
 
     public AuthResponse logout() {
-        // In a stateless JWT system, the token is invalidated on the client side.
-        // We just return a success message here.
         SecurityContextHolder.clearContext();
         return AuthResponse.builder()
                 .message("Logged out successfully")
