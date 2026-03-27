@@ -10,8 +10,11 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class TestRequest {
     private Long examId;
+
     private String title;
+
     private Integer durationMinutes;
+
     private Integer totalScore;
 
     private LocalTime createAt;

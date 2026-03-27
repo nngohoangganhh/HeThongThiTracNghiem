@@ -33,7 +33,7 @@ public class TestController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
     @PostMapping
     public ResponseEntity<TestResponse> createTest(@RequestBody TestRequest request) {
-        return new ResponseEntity<>(testService.createTest(request), HttpStatus.CREATED);
+        return ResponseEntity.ok(testService.createTest(request));
     }
      @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
     @PutMapping("/{id}")
@@ -44,6 +44,6 @@ public class TestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTest(@PathVariable Long id) {
         testService.deleteTest(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

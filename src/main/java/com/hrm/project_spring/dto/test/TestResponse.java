@@ -11,9 +11,14 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class TestResponse {
     private Long id;
+
     private Long examId;
+
     private String title;
+
     private Integer durationMinutes;
+
     private Integer totalScore;
+
     private LocalTime createAt;
 }
