@@ -19,12 +19,9 @@ public class ExamDetailResponse {
     private String description;
     private LocalTime startTime;
     private LocalTime endTime;
-    private Long createdById;
-    private String createdByUsername;
     private String status;
     private LocalTime createdAt;
     private UserResponseDto createdBy;
     private List<UserResponseDto> students;
-
 
 }

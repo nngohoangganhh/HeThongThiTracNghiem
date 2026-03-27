@@ -10,5 +10,5 @@ import java.awt.*;
 public class UserResponseDto {
     private Long id;
     private String username;
-    private String fullname;
+//    private String fullname;
 }

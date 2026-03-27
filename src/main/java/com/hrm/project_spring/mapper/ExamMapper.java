@@ -27,9 +27,9 @@ public class ExamMapper {
                 .name(exam.getName())
                 .description(exam.getDescription())
                 .status(exam.getStatus())
-                .startTime(exam.getStartTime())
-                .endTime(exam.getEndTime())
-                .createdAt(LocalTime.from(LocalDateTime.from(exam.getCreatedAt())))
+                .startTime(exam.getStartTime().toLocalTime())
+                .endTime(exam.getEndTime().toLocalTime())
+                .createdAt(exam.getCreatedAt())
                 .createdBy(toUser(exam.getCreatedBy()))
                 .students(
                         exam.getStudents().stream()

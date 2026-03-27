@@ -13,6 +13,6 @@ public class TestRequest {
     private String title;
     private Integer durationMinutes;
     private Integer totalScore;
-    private Long createdById;
+
     private LocalTime createAt;
 }

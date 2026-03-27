@@ -58,15 +58,16 @@ public class TestService {
 
     public TestResponse createTest(TestRequest request) {
         Exam exam = null;
+        User user = null;
         if (request.getExamId() != null) {
             exam = examRepository.findById(request.getExamId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
         }
-        User user = null;
-        if (request.getCreatedById() != null) {
-            user = userRepository.findById(request.getCreatedById())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-        }
+//        if (request.getCreatedById() != null) {
+//            user = userRepository.findById(request.getCreatedById())
+//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+//        }
+
         Test test = Test.builder()
                 .title(request.getTitle())
                 .durationMinutes(request.getDurationMinutes())
@@ -109,7 +110,7 @@ public class TestService {
                 .title(test.getTitle())
                 .durationMinutes(test.getDurationMinutes())
                 .totalScore(test.getTotalScore())
-                .createdBy(test.getCreatedBy())
+//                .createdBy(test.getCreatedBy())
                 .createAt(LocalTime.from(test.getCreateAt()))
                 .build();
     }

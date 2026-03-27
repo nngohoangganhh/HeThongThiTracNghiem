@@ -1,8 +1,10 @@
 package com.hrm.project_spring.service;
+
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.exam.ExamListResponse;
 import com.hrm.project_spring.dto.exam.ExamRequest;
 import com.hrm.project_spring.dto.exam.ExamDetailResponse;
+import com.hrm.project_spring.dto.student.StudentResponse;
 import com.hrm.project_spring.entity.Exam;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.mapper.ExamMapper;
@@ -17,12 +19,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 //    private final ExamRepository examRepository;
 //    private final UserRepository userRepository;
@@ -180,7 +182,7 @@ import java.util.stream.Collectors;
 //    }
 //
 
-    @Service
+@Service
 @RequiredArgsConstructor
 @Transactional
 public class ExamService {
@@ -190,8 +192,6 @@ public class ExamService {
 
     private static final String ROLE_STUDENT = "STUDENT";
 
-
-    // ================= GET ALL =================
     public PageResponse<ExamListResponse> getAllExam(int pageNo, int pageSize) {
 
         Page<Exam> page = examRepository.findAll(PageRequest.of(pageNo, pageSize));
@@ -211,7 +211,6 @@ public class ExamService {
                 .build();
     }
 
-    // ================= GET DETAIL =================
     public ExamDetailResponse getExamById(Long id) {
 
         Exam exam = examRepository.findByIdWithStudents(id)
@@ -220,7 +219,6 @@ public class ExamService {
         return ExamMapper.toDetailResponse(exam);
     }
 
-    // ================= CREATE =================
     public ExamDetailResponse create(ExamRequest request) {
 
         validate(request);
@@ -233,8 +231,8 @@ public class ExamService {
         Exam exam = Exam.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
+                .startTime(request.getStartTime().atDate(LocalDate.now()))
+                .endTime(request.getEndTime().atDate(LocalDate.now()))
                 .status(request.getStatus())
                 .createdBy(user)
                 .createdAt(LocalTime.now())
@@ -243,7 +241,6 @@ public class ExamService {
         return ExamMapper.toDetailResponse(examRepository.save(exam));
     }
 
-    // ================= UPDATE =================
     public ExamDetailResponse update(Long id, ExamRequest request) {
 
         validate(request);
@@ -253,14 +250,13 @@ public class ExamService {
 
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
-        exam.setStartTime(request.getStartTime());
-        exam.setEndTime(request.getEndTime());
+        exam.setStartTime(request.getStartTime().atDate(LocalDate.from(LocalDateTime.now())));
+        exam.setEndTime(request.getEndTime().atDate(LocalDate.from(LocalDateTime.now())));
         exam.setStatus(request.getStatus());
 
         return ExamMapper.toDetailResponse(examRepository.save(exam));
     }
 
-    // ================= DELETE =================
     public void deleteExam(Long id) {
 
         if (!examRepository.existsById(id)) {
@@ -270,7 +266,6 @@ public class ExamService {
         examRepository.deleteById(id);
     }
 
-    // ================= ASSIGN STUDENTS =================
     public ExamDetailResponse assignStudentsToExam(Long examId, Set<Long> studentIds) {
 
         Exam exam = examRepository.findByIdWithStudents(examId)
@@ -285,8 +280,7 @@ public class ExamService {
         return ExamMapper.toDetailResponse(exam);
     }
 
-    // ================= REMOVE STUDENTS =================
-    public ExamDetailResponse removeStudentFromExam(Long examId, Set<Long> studentIds) {
+    public ExamDetailResponse removeStudentsFromExam(Long examId, Set<Long> studentIds) {
 
         Exam exam = examRepository.findByIdWithStudents(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
@@ -296,7 +290,19 @@ public class ExamService {
         return ExamMapper.toDetailResponse(exam);
     }
 
-    // ================= HELPER =================
+    public Set<StudentResponse> getStudentsByExamId(Long examId) {
+
+        Exam exam = examRepository.findByIdWithStudents(examId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
+
+        return exam.getStudents().stream()
+                .map(u -> StudentResponse.builder()
+                        .id(u.getId())
+                        .username(u.getUsername())
+                        .build())
+                .collect(Collectors.toSet());
+    }
+
     private Set<User> getValidStudents(Set<Long> ids) {
 
         Set<User> users = userRepository.findAllById(ids).stream()
@@ -307,7 +313,6 @@ public class ExamService {
         if (users.size() != ids.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User không hợp lệ");
         }
-
         return users;
     }
 
@@ -322,9 +327,3 @@ public class ExamService {
         }
     }
 }
-
-
-
-
-
-

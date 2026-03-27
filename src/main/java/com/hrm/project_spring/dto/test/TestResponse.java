@@ -15,6 +15,5 @@ public class TestResponse {
     private String title;
     private Integer durationMinutes;
     private Integer totalScore;
-    private User createdBy;
     private LocalTime createAt;
 }
