@@ -44,17 +44,13 @@ public class AuthService {
                 .fullName(request.getFullName())
                 .status("ACTIVE")
                 .build();
-                
         userRepository.save(user);
-
         var jwtToken = jwtService.generateToken(user);
-        
         return AuthResponse.builder()
                 .token(jwtToken)
                 .message("User registered successfully")
                 .build();
     }
-
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

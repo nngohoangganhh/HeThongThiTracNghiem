@@ -35,7 +35,6 @@ public class UserService {
         List<UserResponse> content = users.getContent().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
-
         return PageResponse.<UserResponse>builder()
                 .content(content)
                 .pageNo(users.getNumber())
@@ -58,7 +57,6 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email đã bị trùng");
         }
-
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -66,12 +64,10 @@ public class UserService {
                 .fullName(request.getFullName())
                 .status("ACTIVE")
                 .build();
-
         if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
             Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoleIds()));
             user.setRoles(roles);
         }
-
         User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);
     }
@@ -79,26 +75,22 @@ public class UserService {
     public UserResponse updateUser(Long id, UserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Không tìm thấy id"));
-
         if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username đã bị trùng");
         }
         if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email đã bị trùng");
         }
-
         user.setUsername(request.getUsername());
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         user.setEmail(request.getEmail());
         user.setFullName(request.getFullName());
-
         if (request.getRoleIds() != null) {
             Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoleIds()));
             user.setRoles(roles);
         }
-
         User updatedUser = userRepository.save(user);
         return mapToResponse(updatedUser);
     }
@@ -109,6 +101,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
+
     private UserResponse mapToResponse(User user) {
         List<String> roleNames = null;
         if (user.getRoles() != null) {
@@ -116,7 +109,6 @@ public class UserService {
                     .map(Role::getName)
                     .collect(Collectors.toList());
         }
-
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -127,4 +119,7 @@ public class UserService {
                 .roles(roleNames)
                 .build();
     }
+
+
+
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -32,9 +33,9 @@ public class Exam {
     private String name;
     private String description;
     @Column(name = "start_time")
-    private LocalTime startTime;
+    private LocalDateTime startTime;
     @Column(name = "end_time")
-    private LocalTime endTime;
+    private LocalDateTime endTime;
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

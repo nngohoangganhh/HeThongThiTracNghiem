@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,6 +58,19 @@ public class User implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                 .toList();
     }
+
+    @Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof User)) return false;
+    User user = (User) o;
+    return id != null && id.equals(user.id);
+}
+
+@Override
+public int hashCode() {
+    return getClass().hashCode();
+}
 
     @Override
     public String getPassword() {

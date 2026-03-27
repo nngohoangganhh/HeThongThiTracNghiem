@@ -13,13 +13,10 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExamRequest {
-
     private String name;
     private String description;
-
     private LocalTime startTime;
     private LocalTime endTime;
-
     private String status;
 
 }

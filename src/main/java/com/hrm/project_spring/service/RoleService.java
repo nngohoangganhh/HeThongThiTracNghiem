@@ -36,7 +36,6 @@ public class RoleService {
             .totalElements(page.getTotalElements())
             .totalPages(page.getTotalPages())
             .build();
-
     }
     // by id
     public RoleResponse getRoleById(Long id) {
