@@ -83,32 +83,23 @@ public class ExamService {
 
         return ExamMapper.toDetailResponse(examRepository.save(exam));
     }
-
     public ExamDetailResponse update(Long id, ExamRequest request) {
-
         validate(request);
-
         Exam exam = examRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
-
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
         exam.setStartTime(request.getStartTime().atDate(LocalDate.from(LocalDateTime.now())));
         exam.setEndTime(request.getEndTime().atDate(LocalDate.from(LocalDateTime.now())));
         exam.setStatus(request.getStatus());
-
         return ExamMapper.toDetailResponse(examRepository.save(exam));
     }
-
     public void deleteExam(Long id) {
-
         if (!examRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found");
         }
-
         examRepository.deleteById(id);
     }
-
     public ExamDetailResponse assignStudentsToExam(Long examId, Set<Long> studentIds) {
 
         Exam exam = examRepository.findByIdWithStudents(examId)

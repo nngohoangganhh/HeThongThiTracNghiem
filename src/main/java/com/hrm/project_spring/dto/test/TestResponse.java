@@ -1,6 +1,7 @@
 package com.hrm.project_spring.dto.test;
 
 import com.hrm.project_spring.entity.User;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalTime;
 

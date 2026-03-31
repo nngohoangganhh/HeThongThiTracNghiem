@@ -41,7 +41,6 @@ public class ExamMapper {
 
     private static UserResponseDto toUser(User user) {
         if (user == null) return null;
-
         return UserResponseDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())

@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -57,17 +59,28 @@ public class TestService {
     }
 
     public TestResponse createTest(TestRequest request) {
-        Exam exam = null;
-        User user = null;
+
+         if (request.getTitle() == null || request.getTitle().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title không được để trống");
+        }
+          if (request.getTotalScore() == null || request.getTotalScore() <= 0 || request.getTotalScore() > 10) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, " Tổng điểm của bài thi sẽ không được quá 10 điểm");
+         }
+          if (request.getDurationMinutes() == null || request.getDurationMinutes() <= 0 || request.getDurationMinutes() >180) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "  thời gian làm bài của bài thi sẽ không được quá 180 phút");
+         }
+         Exam exam = null   ;
         if (request.getExamId() != null) {
             exam = examRepository.findById(request.getExamId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
         }
-//        if (request.getCreatedById() != null) {
-//            user = userRepository.findById(request.getCreatedById())
-//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-//        }
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+        }
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
         Test test = Test.builder()
                 .title(request.getTitle())
                 .durationMinutes(request.getDurationMinutes())
@@ -92,7 +105,6 @@ public class TestService {
         test.setTitle(request.getTitle());
         test.setDurationMinutes(request.getDurationMinutes());
         test.setTotalScore(request.getTotalScore());
-
         Test updatedTest = testRepository.save(test);
         return mapToResponse(updatedTest);
     }
@@ -110,7 +122,6 @@ public class TestService {
                 .title(test.getTitle())
                 .durationMinutes(test.getDurationMinutes())
                 .totalScore(test.getTotalScore())
-//                .createdBy(test.getCreatedBy())
                 .createAt(LocalTime.from(test.getCreateAt()))
                 .build();
     }
