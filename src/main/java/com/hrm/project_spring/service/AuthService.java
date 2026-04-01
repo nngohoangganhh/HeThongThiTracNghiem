@@ -74,15 +74,21 @@ public class AuthService {
      UserResponse response = new UserResponse();
      response.setId(user.getId());
      response.setUsername(user.getUsername());
-     response.setEmail(user.getEmail());
+     //response.setEmail(user.getEmail());
      response.setFullName(user.getFullName());
-     response.setStatus(user.getStatus());
-     response.setCreatedAt(user.getCreatedAt());
-
+     //response.setStatus(user.getStatus());
+     //response.setCreatedAt(user.getCreatedAt());
      response.setRoles(
             user.getRoles()
                 .stream()
                 .map(role -> role.getName())
+                .toList());
+     response.setPermission(
+            user.getRoles()
+                .stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .map(permission -> permission.getName())
+                .distinct()
                 .toList());
      return response;
     }

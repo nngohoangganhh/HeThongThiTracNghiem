@@ -14,9 +14,10 @@ import java.util.List;
 public class UserResponse {
     private Long id;
     private String username;
-    private String email;
+    //private String email;
     private String fullName;
-    private String status;
-    private LocalDateTime createdAt;
-    private List<String> roles; // Danh sách tên vai trò của người dùng
+    //private String status;
+    //private LocalDateTime createdAt;
+    private List<String> roles;
+    private List<String> permission;
 }

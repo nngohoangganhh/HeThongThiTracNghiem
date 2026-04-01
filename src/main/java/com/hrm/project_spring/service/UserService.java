@@ -4,6 +4,7 @@ import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
 import com.hrm.project_spring.entity.User;
+import com.hrm.project_spring.repository.PermissionRepository;
 import com.hrm.project_spring.repository.UserRepository;
 import com.hrm.project_spring.repository.RoleRepository;
 import com.hrm.project_spring.entity.Role;
@@ -28,6 +29,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+
     // all
     public PageResponse<UserResponse> getAllUsers(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -104,22 +107,30 @@ public class UserService {
 
     private UserResponse mapToResponse(User user) {
         List<String> roleNames = null;
+        List<String> permissionNames = null;
         if (user.getRoles() != null) {
             roleNames = user.getRoles().stream()
                     .map(Role::getName)
                     .collect(Collectors.toList());
         }
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
-                .status(user.getStatus())
-                .createdAt(user.getCreatedAt())
-                .roles(roleNames)
-                .build();
+        if (user.getRoles() != null) {
+            permissionNames = user.getRoles().stream()
+                    .filter(r -> r.getPermissions() != null)
+                    .flatMap(r -> r.getPermissions().stream())
+                    .map(p -> p.getAction() + ":" + p.getFeature().getCode())
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+            return UserResponse.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    //.email(user.getEmail())
+                    .fullName(user.getFullName())
+                    //.status(user.getStatus())
+                    //.createdAt(user.getCreatedAt())
+                    .roles(roleNames)
+                    .permission(permissionNames)
+                    .build();
+        }
     }
 
-
-
-}

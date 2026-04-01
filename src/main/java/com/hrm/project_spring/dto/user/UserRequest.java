@@ -14,4 +14,5 @@ public class UserRequest {
     private String email;
     private String fullName;
     private Set<Long> roleIds;
+    private Set<Long> permissionIds;
 }

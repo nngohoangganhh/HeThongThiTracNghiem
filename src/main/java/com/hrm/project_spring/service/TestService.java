@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.EnumMap;
 import java.util.List;
 
 @Service
@@ -54,7 +55,7 @@ public class TestService {
 
     public TestResponse getTestById(Long id) {
         Test test = testRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Test not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, " không tìm thấy id của bài test"));
         return mapToResponse(test);
     }
 
@@ -69,7 +70,7 @@ public class TestService {
           if (request.getDurationMinutes() == null || request.getDurationMinutes() <= 0 || request.getDurationMinutes() >180) {
              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "  thời gian làm bài của bài thi sẽ không được quá 180 phút");
          }
-         Exam exam = null   ;
+        Exam exam = null;
         if (request.getExamId() != null) {
             exam = examRepository.findById(request.getExamId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
