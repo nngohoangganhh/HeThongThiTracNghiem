@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -29,7 +31,7 @@ public class Exam {
     name = "exam_students",
     joinColumns = @JoinColumn(name = "exam_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> students = new ArrayList<>();
+    private Set<User> students = new HashSet<>();
     private String name;
     private String description;
     @Column(name = "start_time")

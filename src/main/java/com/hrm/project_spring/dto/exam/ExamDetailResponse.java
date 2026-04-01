@@ -22,6 +22,6 @@ public class ExamDetailResponse {
     private String status;
     private LocalTime createdAt;
     private UserResponseDto createdBy;
-    private List<UserResponseDto> students;
+  //  private List<UserResponseDto> students;
 
 }

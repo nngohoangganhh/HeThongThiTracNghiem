@@ -25,7 +25,7 @@ public class ExamController {
 
     // ======================== CRUD ========================
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:READ')")
     @GetMapping
     public ResponseEntity<PageResponse<ExamListResponse>> getAllExam(
             @RequestParam(defaultValue = "0") int pageNo,
@@ -33,26 +33,27 @@ public class ExamController {
         return ResponseEntity.ok(examService.getAllExam(pageNo, pageSize));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:READ')")
     @GetMapping("/{id}")
     public ResponseEntity<ExamDetailResponse> getExamById(@PathVariable Long id) {
         return ResponseEntity.ok(examService.getExamById(id));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:CREATE')")
     @PostMapping
     public ResponseEntity<ExamDetailResponse> create(@RequestBody @Valid ExamRequest request) {
         return ResponseEntity.ok(examService.create(request));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EXAM:UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ExamDetailResponse> update(@PathVariable Long id,
+    public ResponseEntity<ExamDetailResponse> update(
+            @PathVariable Long id,
             @RequestBody @Valid ExamRequest request) {
         return ResponseEntity.ok(examService.update(id, request));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EXAM:DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
         examService.deleteExam(id);
@@ -61,15 +62,13 @@ public class ExamController {
 
     // ======================== STUDENTS ========================
 
-    // Lấy danh sách sinh viên của kỳ thi
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:READ')")
     @GetMapping("/{examId}/students")
     public ResponseEntity<Set<StudentResponse>> getStudentsByExamId(@PathVariable Long examId) {
         return ResponseEntity.ok(examService.getStudentsByExamId(examId));
     }
 
-    // Gán nhiều sinh viên vào kỳ thi (body: [1, 2, 3])
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:UPDATE')")
     @PostMapping("/{examId}/students")
     public ResponseEntity<ExamDetailResponse> assignStudents(
             @PathVariable Long examId,
@@ -77,8 +76,7 @@ public class ExamController {
         return ResponseEntity.ok(examService.assignStudentsToExam(examId, studentIds));
     }
 
-    // Xóa nhiều sinh viên khỏi kỳ thi (body: [1, 2, 3])
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasAuthority('EXAM:UPDATE')")
     @DeleteMapping("/{examId}/students")
     public ResponseEntity<ExamDetailResponse> removeStudents(
             @PathVariable Long examId,

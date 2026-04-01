@@ -23,85 +23,26 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     @Autowired
     @Lazy
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-//
-//    @Override
-//protected void doFilterInternal(
-//        @NonNull HttpServletRequest role,
-//        @NonNull HttpServletResponse user,
-//        @NonNull FilterChain filterChain
-//) throws ServletException, IOException {
-//
-//    final String authHeader = role.getHeader("Authorization");
-////    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-////        user.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-////        user.getWriter().write("Unauthorized");
-////        return;
-////    }
-//     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//        filterChain.doFilter(role, user);
-//        return;
-//    try {
-//        String jwt = authHeader.substring(7);
-//        String username = jwtService.extractUsername(jwt);
-//
-//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//
-//            if (jwtService.isTokenValid(jwt, userDetails)) {
-//                UsernamePasswordAuthenticationToken authToken =
-//                        new UsernamePasswordAuthenticationToken(
-//                                userDetails,
-//                                null,
-//                                userDetails.getAuthorities()
-//                        );
-//
-//                authToken.setDetails(
-//                        new WebAuthenticationDetailsSource().buildDetails(role)
-//                );
-//
-//                SecurityContextHolder.getContext().setAuthentication(authToken);
-//            } else {
-//                user.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                user.getWriter().write("Invalid token");
-//                return;
-//            }
-//        }
-//
-//    } catch (Exception e) {
-//        user.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        user.getWriter().write("Unauthorized");
-//        return;
-//    }
-//    filterChain.doFilter(role, user);
-//}
-
     @Override
-protected void doFilterInternal(
+    protected void doFilterInternal(
         @NonNull HttpServletRequest request,
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
-) throws ServletException, IOException {
-
+    ) throws ServletException, IOException {
     final String authHeader = request.getHeader("Authorization");
-
-
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
         filterChain.doFilter(request, response);
         return;
     }
-
     try {
         String jwt = authHeader.substring(7);
         String username = jwtService.extractUsername(jwt);
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -109,21 +50,17 @@ protected void doFilterInternal(
                                 null,
                                 userDetails.getAuthorities()
                         );
-
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
     } catch (Exception e) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("Invalid token");
         return;
     }
-
     filterChain.doFilter(request, response);
         System.out.println("request: " + request.getRequestURI());
 }

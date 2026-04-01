@@ -12,33 +12,37 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-
 public class UserController {
 
     private final UserService userService;
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+
+    @PreAuthorize("hasAuthority('USER:READ')")
     @GetMapping
     public ResponseEntity<PageResponse<UserResponse>> getAllUsers(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(userService.getAllUsers(pageNo, pageSize));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasAuthority('USER:READ')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasAuthority('USER:CREATE')")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasAuthority('USER:UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasAuthority('USER:DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

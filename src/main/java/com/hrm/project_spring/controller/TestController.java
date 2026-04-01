@@ -18,29 +18,34 @@ public class TestController {
     public TestController(TestService testService) {
         this.testService = testService;
     }
-   @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
+
+    @PreAuthorize("hasAuthority('TEST:READ')")
     @GetMapping
     public ResponseEntity<PageResponse<TestResponse>> getAllTests(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(testService.getAllTest(pageNo, pageSize));
     }
-     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
+
+    @PreAuthorize("hasAuthority('TEST:READ')")
     @GetMapping("/{id}")
     public ResponseEntity<TestResponse> getTestById(@PathVariable Long id) {
         return ResponseEntity.ok(testService.getTestById(id));
     }
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
+
+    @PreAuthorize("hasAuthority('TEST:CREATE')")
     @PostMapping
     public ResponseEntity<TestResponse> createTest(@RequestBody TestRequest request) {
         return ResponseEntity.ok(testService.createTest(request));
     }
-     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
+
+    @PreAuthorize("hasAuthority('TEST:UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<TestResponse> updateTest(@PathVariable Long id, @RequestBody TestRequest request) {
         return ResponseEntity.ok(testService.updateTest(id, request));
     }
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')") // Chỉ ADMIN và TEACHER mới có quyền truy cập
+
+    @PreAuthorize("hasAuthority('TEST:DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTest(@PathVariable Long id) {
         testService.deleteTest(id);

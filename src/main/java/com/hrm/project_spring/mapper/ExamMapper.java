@@ -31,11 +31,11 @@ public class ExamMapper {
                 .endTime(exam.getEndTime().toLocalTime())
                 .createdAt(exam.getCreatedAt())
                 .createdBy(toUser(exam.getCreatedBy()))
-                .students(
-                        exam.getStudents().stream()
-                                .map(ExamMapper::toUser)
-                                .toList()
-                )
+//                .students(
+//                        exam.getStudents().stream()
+//                                .map(ExamMapper::toUser)
+//                                .toList()
+//                )
                 .build();
     }
 
