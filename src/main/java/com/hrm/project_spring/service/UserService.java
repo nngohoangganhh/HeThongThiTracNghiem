@@ -103,18 +103,16 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Không tìm thấy id"));
         userRepository.delete(user);
     }
-
-
     private UserResponse mapToResponse(User user) {
         List<String> roleNames = null;
-        List<String> permissionNames = null;
+        List<String> permissionCode = null;
         if (user.getRoles() != null) {
             roleNames = user.getRoles().stream()
                     .map(Role::getName)
                     .collect(Collectors.toList());
         }
         if (user.getRoles() != null) {
-            permissionNames = user.getRoles().stream()
+            permissionCode = user.getRoles().stream()
                     .filter(r -> r.getPermissions() != null)
                     .flatMap(r -> r.getPermissions().stream())
                     .map(p -> p.getAction() + ":" + p.getFeature().getCode())
@@ -129,7 +127,7 @@ public class UserService {
                     //.status(user.getStatus())
                     //.createdAt(user.getCreatedAt())
                     .roles(roleNames)
-                    .permission(permissionNames)
+                    .permissions(permissionCode)
                     .build();
         }
     }

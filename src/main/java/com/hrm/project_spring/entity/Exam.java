@@ -6,12 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -20,7 +18,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "exams")
-
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

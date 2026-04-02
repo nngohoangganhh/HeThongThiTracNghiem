@@ -19,5 +19,5 @@ public class UserResponse {
     //private String status;
     //private LocalDateTime createdAt;
     private List<String> roles;
-    private List<String> permission;
+    private List<String> permissions;
 }

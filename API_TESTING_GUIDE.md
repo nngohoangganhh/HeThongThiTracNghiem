@@ -132,3 +132,36 @@ Tất cả các API từ phần này trở xuống đều yêu cầu có Token x
 * **Method:** `DELETE`
 * **Header:** `Authorization: Bearer <token>`
 * **Response:** Trả về HTTP Status `204 No Content` nếu thành công.
+
+---
+
+/*
+Viết hướng dẫn test API theo cấu trúc RBAC (Role-Based Access Control)
+
+Yêu cầu:
+- API: /api/users
+- Bao gồm các phần:
+
+1. Role:
+   - Admin: full quyền
+   - User: chỉ đọc
+   - Guest: không có quyền
+
+2. Feature:
+   - Create user
+   - Get user list
+   - Delete user
+
+3. Permission:
+   - Admin: create, read, delete
+   - User: read
+   - Guest: none
+
+4. Viết test case cho từng role:
+   - request
+   - expected response
+   - status code
+
+Format rõ ràng dạng markdown
+*/
+

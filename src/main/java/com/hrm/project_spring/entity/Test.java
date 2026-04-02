@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -31,6 +33,15 @@ public class Test {
     private Integer durationMinutes;
     @Column(name = "total_score")
     private Integer totalScore;
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+        name = "test_questions",
+        joinColumns = @JoinColumn(name = "test_id"),
+        inverseJoinColumns = @JoinColumn(name = "question_id"))
+    private Set<Question> questions = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

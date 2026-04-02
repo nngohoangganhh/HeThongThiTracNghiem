@@ -24,7 +24,6 @@ public class ExamController {
     }
 
     // ======================== CRUD ========================
-
     @PreAuthorize("hasAuthority('EXAM:READ')")
     @GetMapping
     public ResponseEntity<PageResponse<ExamListResponse>> getAllExam(
@@ -32,7 +31,6 @@ public class ExamController {
             @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(examService.getAllExam(pageNo, pageSize));
     }
-
     @PreAuthorize("hasAuthority('EXAM:READ')")
     @GetMapping("/{id}")
     public ResponseEntity<ExamDetailResponse> getExamById(@PathVariable Long id) {

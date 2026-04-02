@@ -36,14 +36,11 @@ public class ExamService {
     private static final String ROLE_STUDENT = "STUDENT";
 
     public PageResponse<ExamListResponse> getAllExam(int pageNo, int pageSize) {
-
         Page<Exam> page = examRepository.findAll(PageRequest.of(pageNo, pageSize));
-
         List<ExamListResponse> data = page.getContent()
                 .stream()
                 .map(ExamMapper::toListResponse)
                 .toList();
-
         return PageResponse.<ExamListResponse>builder()
                 .content(data)
                 .pageNo(page.getNumber())

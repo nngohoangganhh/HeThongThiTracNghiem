@@ -38,7 +38,6 @@ public class ExamMapper {
 //                )
                 .build();
     }
-
     private static UserResponseDto toUser(User user) {
         if (user == null) return null;
         return UserResponseDto.builder()

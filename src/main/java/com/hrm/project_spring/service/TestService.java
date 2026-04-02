@@ -35,7 +35,6 @@ public class TestService {
         this.examRepository = examRepository;
         this.userRepository = userRepository;
     }
-
     public PageResponse<TestResponse> getAllTest(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Test> page = testRepository.findAll(pageable);
@@ -52,13 +51,11 @@ public class TestService {
                 .last(page.isLast())
                 .build();
     }
-
     public TestResponse getTestById(Long id) {
         Test test = testRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, " không tìm thấy id của bài test"));
         return mapToResponse(test);
     }
-
     public TestResponse createTest(TestRequest request) {
 
          if (request.getTitle() == null || request.getTitle().isBlank()) {

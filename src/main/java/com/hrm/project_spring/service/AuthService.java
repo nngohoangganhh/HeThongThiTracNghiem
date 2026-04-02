@@ -81,13 +81,13 @@ public class AuthService {
      response.setRoles(
             user.getRoles()
                 .stream()
-                .map(role -> role.getName())
+                .map(role -> role.getCode())
                 .toList());
-     response.setPermission(
+     response.setPermissions(
             user.getRoles()
                 .stream()
                 .flatMap(role -> role.getPermissions().stream())
-                .map(permission -> permission.getName())
+                .map(permission -> permission.getCode())
                 .distinct()
                 .toList());
      return response;
