@@ -50,15 +50,12 @@ public class ExamService {
                 .last(page.isLast())
                 .build();
     }
-
     public ExamDetailResponse getExamById(Long id) {
-
         Exam exam = examRepository.findByIdWithStudents(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
 
         return ExamMapper.toDetailResponse(exam);
     }
-
     public ExamDetailResponse create(ExamRequest request) {
 
         validate(request);
@@ -148,11 +145,9 @@ public class ExamService {
     }
 
     private void validate(ExamRequest request) {
-
         if (request.getStartTime().isAfter(request.getEndTime())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start phải trước End");
         }
-
         if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tên không được trống");
         }

@@ -33,7 +33,6 @@ public class Test {
     private Integer durationMinutes;
     @Column(name = "total_score")
     private Integer totalScore;
-
     @Builder.Default
     @ManyToMany
     @JoinTable(
@@ -41,7 +40,6 @@ public class Test {
         joinColumns = @JoinColumn(name = "test_id"),
         inverseJoinColumns = @JoinColumn(name = "question_id"))
     private Set<Question> questions = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

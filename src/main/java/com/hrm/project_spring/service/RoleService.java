@@ -40,7 +40,6 @@ public class RoleService {
                 .totalPages(page.getTotalPages())
                 .build();
     }
-
     public RoleResponse getRoleById(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
