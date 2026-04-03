@@ -21,16 +21,6 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "option_a")
-    private String optionA;
-    @Column(name = "option_b")
-    private String optionB;
-    @Column(name = "option_c")
-    private String optionC;
-    @Column(name = "option_d")
-    private String optionD;
-    @Column(name = "correct_answer")
-    private String correctAnswer;
     private String content;
     @Column(name = "question_type")
     private String questionType;
@@ -42,4 +32,17 @@ public class Question {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Answer> answers = new HashSet<>();
+
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+        answer.setQuestion(this);
+    }
+    
+    public void removeAnswer(Answer answer) {
+        answers.remove(answer);
+        answer.setQuestion(null);
+    }
 }

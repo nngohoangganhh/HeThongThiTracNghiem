@@ -3,6 +3,7 @@ package com.hrm.project_spring.service;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
+import com.hrm.project_spring.dto.user.UserResponseDto;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.repository.PermissionRepository;
 import com.hrm.project_spring.repository.UserRepository;
@@ -32,13 +33,13 @@ public class UserService {
 
 
     // all
-    public PageResponse<UserResponse> getAllUsers(int pageNo, int pageSize) {
+    public PageResponse<UserResponseDto> getAllUsers(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<User> users = userRepository.findAll(pageable);
-        List<UserResponse> content = users.getContent().stream()
-                .map(this::mapToResponse)
+        List<UserResponseDto> content = users.getContent().stream()
+                .map(this::mapTo)
                 .collect(Collectors.toList());
-        return PageResponse.<UserResponse>builder()
+        return PageResponse.<UserResponseDto>builder()
                 .content(content)
                 .pageNo(users.getNumber())
                 .pageSize(users.getSize())
@@ -104,11 +105,11 @@ public class UserService {
         userRepository.delete(user);
     }
     private UserResponse mapToResponse(User user) {
-        List<String> roleNames = null;
+        List<String> roleCode = null;
         List<String> permissionCode = null;
         if (user.getRoles() != null) {
-            roleNames = user.getRoles().stream()
-                    .map(Role::getName)
+            roleCode = user.getRoles().stream()
+                    .map(Role::getCode)
                     .collect(Collectors.toList());
         }
         if (user.getRoles() != null) {
@@ -122,13 +123,20 @@ public class UserService {
             return UserResponse.builder()
                     .id(user.getId())
                     .username(user.getUsername())
-                    //.email(user.getEmail())
                     .fullName(user.getFullName())
-                    //.status(user.getStatus())
-                    //.createdAt(user.getCreatedAt())
-                    .roles(roleNames)
+                    .roles(roleCode)
                     .permissions(permissionCode)
                     .build();
         }
+        private UserResponseDto mapTo (User user ){
+           return UserResponseDto.builder()
+                   .id(user.getId())
+                   .username(user.getUsername())
+                   .build();
+        }
+
+
+
+
     }
 

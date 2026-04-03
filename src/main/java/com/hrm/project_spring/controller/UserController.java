@@ -3,6 +3,7 @@ package com.hrm.project_spring.controller;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
+import com.hrm.project_spring.dto.user.UserResponseDto;
 import com.hrm.project_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER:READ')")
     @GetMapping
-    public ResponseEntity<PageResponse<UserResponse>> getAllUsers(
+    public ResponseEntity<PageResponse<UserResponseDto>> getAllUsers(
+
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(userService.getAllUsers(pageNo, pageSize));

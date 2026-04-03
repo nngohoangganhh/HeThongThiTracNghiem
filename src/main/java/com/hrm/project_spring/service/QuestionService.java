@@ -51,11 +51,6 @@ public class QuestionService {
 
         Question question = Question.builder()
                 .content(request.getContent())
-                .optionA(request.getOptionA())
-                .optionB(request.getOptionB())
-                .optionC(request.getOptionC())
-                .optionD(request.getOptionD())
-                .correctAnswer(request.getCorrectAnswer())
                 .questionType(request.getQuestionType())
                 .difficulty(request.getDifficulty())
                 .createdAt(LocalDateTime.now())
@@ -70,11 +65,6 @@ public class QuestionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
 
         question.setContent(request.getContent());
-        question.setOptionA(request.getOptionA());
-        question.setOptionB(request.getOptionB());
-        question.setOptionC(request.getOptionC());
-        question.setOptionD(request.getOptionD());
-        question.setCorrectAnswer(request.getCorrectAnswer());
         question.setQuestionType(request.getQuestionType());
         question.setDifficulty(request.getDifficulty());
 
