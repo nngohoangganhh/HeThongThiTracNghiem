@@ -87,9 +87,7 @@ public class PermissionService {
         permissionRepository.delete(permission);
     }
 
-    /**
-     * Gán danh sách permissionIds vào role (thêm vào, không ghi đè)
-     */
+
     //1
     @Transactional
     public void assignPermissionsToRole(Long roleId, Set<Long> permissionIds) {
@@ -100,9 +98,7 @@ public class PermissionService {
         roleRepository.save(role);
     }
 
-    /**
-     * Gỡ danh sách permissionIds khỏi role
-     */
+
     //2
     @Transactional
     public void removePermissionsFromRole(Long roleId, Set<Long> permissionIds) {

@@ -1,9 +1,11 @@
 package com.hrm.project_spring.controller;
 
 import com.hrm.project_spring.dto.common.PageResponse;
+import com.hrm.project_spring.dto.test.AssignQuestionsRequest;
 import com.hrm.project_spring.dto.test.TestRequest;
 import com.hrm.project_spring.dto.test.TestResponse;
 import com.hrm.project_spring.service.TestService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,5 +52,13 @@ public class TestController {
     public ResponseEntity<Void> deleteTest(@PathVariable Long id) {
         testService.deleteTest(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PreAuthorize("hasAuthority('TEST:UPDATE')")
+    @PostMapping("/{testId}/questions")
+    public ResponseEntity<TestResponse> assignQuestions(
+            @PathVariable Long testId,
+            @Valid @RequestBody AssignQuestionsRequest request) {
+        return ResponseEntity.ok(testService.assignQuestions(testId, request));
     }
 }

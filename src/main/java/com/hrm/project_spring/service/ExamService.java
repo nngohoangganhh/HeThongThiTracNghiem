@@ -57,14 +57,10 @@ public class ExamService {
         return ExamMapper.toDetailResponse(exam);
     }
     public ExamDetailResponse create(ExamRequest request) {
-
         validate(request);
-
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-
         Exam exam = Exam.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -74,7 +70,6 @@ public class ExamService {
                 .createdBy(user)
                 .createdAt(LocalTime.now())
                 .build();
-
         return ExamMapper.toDetailResponse(examRepository.save(exam));
     }
     public ExamDetailResponse update(Long id, ExamRequest request) {
@@ -95,34 +90,24 @@ public class ExamService {
         examRepository.deleteById(id);
     }
     public ExamDetailResponse assignStudentsToExam(Long examId, Set<Long> studentIds) {
-
         Exam exam = examRepository.findByIdWithStudents(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
-
         Set<User> students = getValidStudents(studentIds);
-
         students.removeAll(exam.getStudents()); // tránh duplicate
-
         exam.getStudents().addAll(students);
-
         return ExamMapper.toDetailResponse(exam);
     }
 
     public ExamDetailResponse removeStudentsFromExam(Long examId, Set<Long> studentIds) {
-
         Exam exam = examRepository.findByIdWithStudents(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
-
         exam.getStudents().removeIf(u -> studentIds.contains(u.getId()));
-
         return ExamMapper.toDetailResponse(exam);
     }
 
     public Set<StudentResponse> getStudentsByExamId(Long examId) {
-
         Exam exam = examRepository.findByIdWithStudents(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
-
         return exam.getStudents().stream()
                 .map(u -> StudentResponse.builder()
                         .id(u.getId())
@@ -132,12 +117,10 @@ public class ExamService {
     }
 
     private Set<User> getValidStudents(Set<Long> ids) {
-
         Set<User> users = userRepository.findAllById(ids).stream()
-                .filter(u -> u.getRoles().stream()
-                        .anyMatch(r -> ROLE_STUDENT.equals(r.getName())))
-                .collect(Collectors.toSet());
-
+                        .filter(u -> u.getRoles().stream()
+                        .anyMatch(r -> ROLE_STUDENT.equals(r.getCode())))
+                        .collect(Collectors.toSet());
         if (users.size() != ids.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User không hợp lệ");
         }

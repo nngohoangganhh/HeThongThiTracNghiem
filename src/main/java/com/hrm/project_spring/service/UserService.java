@@ -130,13 +130,8 @@ public class UserService {
         }
         private UserResponseDto mapTo (User user ){
            return UserResponseDto.builder()
-                   .id(user.getId())
                    .username(user.getUsername())
                    .build();
         }
-
-
-
-
     }
 

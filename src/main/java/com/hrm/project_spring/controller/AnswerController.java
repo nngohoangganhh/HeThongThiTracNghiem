@@ -19,6 +19,7 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
+    @PreAuthorize("hasAuthority('QUESTION:READ')")
     @GetMapping
     public ResponseEntity<List<AnswerResponse>> getAnswersByQuestion(
             @PathVariable Long questionId,

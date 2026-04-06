@@ -7,8 +7,11 @@ import com.hrm.project_spring.entity.Question;
 import com.hrm.project_spring.repository.AnswerRepository;
 import com.hrm.project_spring.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,10 +75,9 @@ public class AnswerService{
     }
 
     @Transactional
-    public AnswerResponse updateAnswer(Long questionId, Long answerId, AnswerRequest request) {
+    public AnswerResponse updateAnswer(Long questionId, Long answerId,AnswerRequest request) {
         Answer answer = answerRepository.findByIdAndQuestionId(answerId, questionId)
                 .orElseThrow(() -> new RuntimeException(" Không tìm thấy câu trả lời cho câu hỏi "));
-
         Question question = answer.getQuestion();
 
         if ("single".equalsIgnoreCase(question.getQuestionType()) && request.getIsCorrect() && !Boolean.TRUE.equals(answer.getIsCorrect())) {
@@ -85,17 +87,16 @@ public class AnswerService{
                 throw new IllegalArgumentException("Câu hỏi trắc nghiệm chỉ có một đáp án đúng.");
             }
         }
-
         answer.setContent(request.getContent());
         answer.setIsCorrect(request.getIsCorrect());
-        
+
         return mapToResponse(answerRepository.save(answer), true);
     }
 
     @Transactional
     public void deleteAnswer(Long questionId, Long answerId) {
         Answer answer = answerRepository.findByIdAndQuestionId(answerId, questionId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy câu trả lời cho câu hỏi"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"không tìm thay câu trả lời"));
         
         answer.getQuestion().removeAnswer(answer);
         answerRepository.delete(answer);

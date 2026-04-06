@@ -70,7 +70,6 @@ public class AuthService {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "User not found"));
-
      UserResponse response = new UserResponse();
      response.setId(user.getId());
      response.setUsername(user.getUsername());
@@ -92,7 +91,6 @@ public class AuthService {
                 .toList());
      return response;
     }
-
     public AuthResponse logout() {
         SecurityContextHolder.clearContext();
         return AuthResponse.builder()
