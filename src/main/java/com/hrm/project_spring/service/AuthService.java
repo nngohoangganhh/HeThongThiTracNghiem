@@ -10,6 +10,7 @@ import com.hrm.project_spring.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +37,6 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Email already exists");
         }
-
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -59,7 +59,7 @@ public class AuthService {
                 )
         );
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST," USER NOT FOUND"));
         var jwtToken = jwtService.generateToken(user);
         return AuthResponse.builder()
                 .token(jwtToken)

@@ -1,5 +1,6 @@
 package com.hrm.project_spring.controller;
 
+import com.hrm.project_spring.dto.common.ApiResponse;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.question.QuestionRequest;
 import com.hrm.project_spring.dto.question.QuestionResponse;
@@ -17,36 +18,61 @@ public class QuestionController {
 
     @PreAuthorize("hasAuthority('QUESTION:READ')")
     @GetMapping
-    public ResponseEntity<PageResponse<QuestionResponse>> getAllQuestion(
+    public ResponseEntity<ApiResponse<PageResponse<QuestionResponse>>> getAllQuestion(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        return ResponseEntity.ok(questionService.getAllQuestion(pageNo, pageSize));
+        return ResponseEntity.ok(ApiResponse.<PageResponse<QuestionResponse>>builder()
+                .success(true)
+                .status(200)
+                .message("Lấy danh sách thành công")
+                .data(questionService.getAllQuestion(pageNo, pageSize))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('QUESTION:READ')")
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id) {
-        return ResponseEntity.ok(questionService.getQuestionById(id));
+    public ResponseEntity<ApiResponse<QuestionResponse>> getQuestionById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<QuestionResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Chi tiết câu hỏi")
+                .data(questionService.getQuestionById(id))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('QUESTION:CREATE')")
     @PostMapping
-    public ResponseEntity<QuestionResponse> create(@RequestBody QuestionRequest request) {
-        return ResponseEntity.ok(questionService.create(request));
+    public ResponseEntity<ApiResponse<QuestionResponse>> create(@RequestBody QuestionRequest request) {
+        return ResponseEntity.ok(ApiResponse.<QuestionResponse>builder()
+                .success(true)
+                .status(201)
+                .message("Tạo câu hỏi thành công")
+                .data(questionService.create(request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('QUESTION:UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionResponse> update(
+    public ResponseEntity<ApiResponse<QuestionResponse>> update(
             @PathVariable Long id,
             @RequestBody QuestionRequest request) {
-        return ResponseEntity.ok(questionService.update(id, request));
+        return ResponseEntity.ok(ApiResponse.<QuestionResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Cập nhật thành công")
+                .data(questionService.update(id, request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('QUESTION:DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         questionService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .status(200)
+                .message("Xóa câu hỏi thành công")
+                .data(null)
+                .build());
     }
 }

@@ -89,9 +89,12 @@ public class ExamService {
         }
         examRepository.deleteById(id);
     }
+
+
     public ExamDetailResponse assignStudentsToExam(Long examId, Set<Long> studentIds) {
         Exam exam = examRepository.findByIdWithStudents(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
+
         Set<User> students = getValidStudents(studentIds);
         students.removeAll(exam.getStudents()); // tránh duplicate
         exam.getStudents().addAll(students);

@@ -1,5 +1,6 @@
 package com.hrm.project_spring.controller;
 
+import com.hrm.project_spring.dto.common.ApiResponse;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.permission.PermissionResponse;
 import com.hrm.project_spring.dto.role.RoleRequest;
@@ -24,56 +25,64 @@ public class RoleController {
 
     @PreAuthorize("hasAuthority('ROLE:READ')")
     @GetMapping
-    public ResponseEntity<PageResponse<RoleResponse>> getAllRoles(
+    public ResponseEntity<ApiResponse<PageResponse<RoleResponse>>> getAllRoles(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        return ResponseEntity.ok(roleService.getAllRoles(pageNo, pageSize));
+        return ResponseEntity.ok(ApiResponse.<PageResponse<RoleResponse>>builder()
+                .success(true)
+                .status(200)
+                .message("Lấy danh sách role thành công")
+                .data(roleService.getAllRoles(pageNo, pageSize))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('ROLE:READ')")
     @GetMapping("/{id}")
-    public ResponseEntity<RoleResponse> getRoleById(@PathVariable Long id) {
-        return ResponseEntity.ok(roleService.getRoleById(id));
+    public ResponseEntity<ApiResponse<RoleResponse>> getRoleById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<RoleResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Chi tiết role")
+                .data(roleService.getRoleById(id))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('ROLE:CREATE')")
     @PostMapping
-    public ResponseEntity<RoleResponse> createRole(@RequestBody @Valid RoleRequest request) {
-        return ResponseEntity.ok(roleService.createRole(request));
+    public ResponseEntity<ApiResponse<RoleResponse>> createRole(@RequestBody @Valid RoleRequest request) {
+        return ResponseEntity.ok(ApiResponse.<RoleResponse>builder()
+                .success(true)
+                .status(201)
+                .message("Tạo role thành công")
+                .data(roleService.createRole(request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('ROLE:UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<RoleResponse> updateRole(
+    public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
             @PathVariable Long id,
             @RequestBody @Valid RoleRequest request) {
-        return ResponseEntity.ok(roleService.updateRole(id, request));
+        return ResponseEntity.ok(ApiResponse.<RoleResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Cập nhật role thành công")
+                .data(roleService.updateRole(id, request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('ROLE:DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .status(200)
+                .message("Xóa role thành công")
+                .data(null)
+                .build());
     }
 
-    // ======================== Gán/Gỡ Permission vào Role ========================
 
-    @PreAuthorize("hasAuthority('PERMISSION:ASSIGN')")
-    @PostMapping("/{roleId}/permissions")
-    public ResponseEntity<Void> assignPermissions(
-            @PathVariable Long roleId,
-            @RequestBody Set<Long> permissionIds) {
-        permissionService.assignPermissionsToRole(roleId, permissionIds);
-        return ResponseEntity.ok().build();
-    }
 
-    @PreAuthorize("hasAuthority('PERMISSION:ASSIGN')")
-    @DeleteMapping("/{roleId}/permissions")
-    public ResponseEntity<Void> removePermissions(
-            @PathVariable Long roleId,
-            @RequestBody Set<Long> permissionIds) {
-        permissionService.removePermissionsFromRole(roleId, permissionIds);
-        return ResponseEntity.ok().build();
-    }
 }

@@ -1,10 +1,12 @@
 package com.hrm.project_spring.dto.question;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+
 
 @Data
 @Builder
@@ -17,4 +19,5 @@ public class QuestionResponse {
     private String difficulty;
     private String createdBy;
     private LocalDateTime createdAt;
+
 }

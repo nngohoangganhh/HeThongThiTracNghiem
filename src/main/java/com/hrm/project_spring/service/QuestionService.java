@@ -40,12 +40,15 @@ public class QuestionService {
                 .last(page.isLast())
                 .build();
     }
+
     public QuestionResponse getQuestionById(Long id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
         return QuestionMapper.toResponse(question);
     }
+
     public QuestionResponse create(QuestionRequest request) {
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByUsername(username).orElse(null);
 
@@ -63,11 +66,9 @@ public class QuestionService {
     public QuestionResponse update(Long id, QuestionRequest request) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
-
         question.setContent(request.getContent());
         question.setQuestionType(request.getQuestionType());
         question.setDifficulty(request.getDifficulty());
-
         Question updated = questionRepository.save(question);
         return QuestionMapper.toResponse(updated);
     }

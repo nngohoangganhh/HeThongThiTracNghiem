@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProjectSpringApplication {
+public class EduOnlApplication {
     public static void main(String[] args) {
         System.out.println("HỆ THỐNG ĐANG CHẠY VUI LÒNG ĐỢI");
-        SpringApplication.run(ProjectSpringApplication.class, args);
+        SpringApplication.run(EduOnlApplication.class, args);
         System.out.println("HỆ THỐNG ĐÃ CHẠY THÀNH CÔNG CẢM ƠN BẠN ĐÃ ĐỢI");
     }
 

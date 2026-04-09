@@ -1,13 +1,15 @@
 package com.hrm.project_spring.dto.result;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentAnswerSubmitRequest {
-    @NotNull(message = "Question ID không được để trống")
     private Long questionId;
-    
-    // selectedAnswerId có thể null nểu student bỏ trống (không chọn đáp án nào)
     private Long selectedAnswerId;
 }

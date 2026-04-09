@@ -1,12 +1,16 @@
 package com.hrm.project_spring.dto.result;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttemptSubmitRequest {
-    @Valid
     private List<StudentAnswerSubmitRequest> answers;
 }

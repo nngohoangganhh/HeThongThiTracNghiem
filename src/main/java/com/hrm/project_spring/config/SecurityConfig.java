@@ -1,6 +1,7 @@
 package com.hrm.project_spring.config;
 
 import com.hrm.project_spring.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,22 +29,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html",  "/webjars/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
+                .requestMatchers("/api/auth/login","api/auth/register").permitAll()
+                .anyRequest().authenticated())
+
+                  .exceptionHandling(ex -> ex
+                  .authenticationEntryPoint((req, res, e) ->
+                  res.sendError(HttpServletResponse.SC_FORBIDDEN)))
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

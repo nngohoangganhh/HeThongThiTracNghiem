@@ -1,5 +1,6 @@
 package com.hrm.project_spring.controller;
 
+import com.hrm.project_spring.dto.common.ApiResponse;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.feature.FeatureRequest;
 import com.hrm.project_spring.dto.feature.FeatureResponse;
@@ -19,36 +20,61 @@ public class FeatureController {
 
     @PreAuthorize("hasAuthority('FEATURE:READ')")
     @GetMapping
-    public ResponseEntity<PageResponse<FeatureResponse>> getAllFeatures(
+    public ResponseEntity<ApiResponse<PageResponse<FeatureResponse>>> getAllFeatures(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        return ResponseEntity.ok(featureService.getAllFeatures(pageNo, pageSize));
+        return ResponseEntity.ok(ApiResponse.<PageResponse<FeatureResponse>>builder()
+                .success(true)
+                .status(200)
+                .message("Lấy danh sách feature thành công")
+                .data(featureService.getAllFeatures(pageNo, pageSize))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('FEATURE:READ')")
     @GetMapping("/{id}")
-    public ResponseEntity<FeatureResponse> getFeatureById(@PathVariable Long id) {
-        return ResponseEntity.ok(featureService.getFeatureById(id));
+    public ResponseEntity<ApiResponse<FeatureResponse>> getFeatureById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<FeatureResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Chi tiết feature")
+                .data(featureService.getFeatureById(id))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('FEATURE:CREATE')")
     @PostMapping
-    public ResponseEntity<FeatureResponse> createFeature(@RequestBody @Valid FeatureRequest request) {
-        return ResponseEntity.ok(featureService.createFeature(request));
+    public ResponseEntity<ApiResponse<FeatureResponse>> createFeature(@RequestBody @Valid FeatureRequest request) {
+        return ResponseEntity.ok(ApiResponse.<FeatureResponse>builder()
+                .success(true)
+                .status(201)
+                .message("Tạo feature thành công")
+                .data(featureService.createFeature(request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('FEATURE:UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<FeatureResponse> updateFeature(
+    public ResponseEntity<ApiResponse<FeatureResponse>> updateFeature(
             @PathVariable Long id,
             @RequestBody @Valid FeatureRequest request) {
-        return ResponseEntity.ok(featureService.updateFeature(id, request));
+        return ResponseEntity.ok(ApiResponse.<FeatureResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Cập nhật feature thành công")
+                .data(featureService.updateFeature(id, request))
+                .build());
     }
 
     @PreAuthorize("hasAuthority('FEATURE:DELETE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFeature(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteFeature(@PathVariable Long id) {
         featureService.deleteFeature(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .status(200)
+                .message("Xóa feature thành công")
+                .data(null)
+                .build());
     }
 }

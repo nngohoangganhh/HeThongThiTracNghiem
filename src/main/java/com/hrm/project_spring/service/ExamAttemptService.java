@@ -1,7 +1,8 @@
 package com.hrm.project_spring.service;
 
+import com.hrm.project_spring.dto.exam.ExamAttemptStart;
 import com.hrm.project_spring.dto.result.AttemptSubmitRequest;
-import com.hrm.project_spring.dto.exam.ExamAttemptResponse;
+import com.hrm.project_spring.dto.exam.ExamAttemptSubmit;
 import com.hrm.project_spring.dto.result.StudentAnswerSubmitRequest;
 import com.hrm.project_spring.entity.*;
 import com.hrm.project_spring.repository.*;
@@ -24,11 +25,11 @@ public class ExamAttemptService {
     private final AnswerRepository answerRepository;
 
     @Transactional
-    public ExamAttemptResponse startAttempt(Long testId, String username) {
+    public ExamAttemptStart startAttempt(Long testId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST," tài khoản không tồn tại"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, " tài khoản không tồn tại"));
         Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Test không tồn tại"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Test không tồn tại"));
 
         ExamAttempt attempt = ExamAttempt.builder()
                 .user(user)
@@ -37,29 +38,33 @@ public class ExamAttemptService {
                 .build();
 
         attempt = attemptRepository.save(attempt);
-        return mapToResponse(attempt);
+        return maptoStart(attempt);
     }
 
     @Transactional
-    public ExamAttemptResponse submitAttempt(Long attemptId, String username, AttemptSubmitRequest request) {
+    public ExamAttemptSubmit submitAttempt(Long attemptId, String username, AttemptSubmitRequest request) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST," tài khoản không tồn tại"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, " tài khoản không tồn tại"));
+
         ExamAttempt attempt = attemptRepository.findByIdAndUserId(attemptId, user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST," không tồn tại "));
-        // không cho nộp quá â lần
-        if (attempt.getSubmitTime() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST," bài thi đã được nộp");
-        }
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, " bài thi không tồn tại "));
+        // không cho nộp quá 1 lần
+         if (attempt.getSubmitTime() != null) {
+         throw new ResponseStatusException(HttpStatus.BAD_REQUEST," bài thi đã được nộp");
+         }
         int totalCorrect = 0;
         if (request.getAnswers() != null) {
             for (StudentAnswerSubmitRequest ansReq : request.getAnswers()) {
                 Question question = questionRepository.findById(ansReq.getQuestionId())
-                        .orElseThrow(() -> new RuntimeException("Câu hỏi không tồn tại: " + ansReq.getQuestionId()));
+                        .orElseThrow(
+                                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Câu hỏi không tồn tại"));
                 boolean isCorrect = false;
                 Answer selectedAnswer = null;
                 if (ansReq.getSelectedAnswerId() != null) {
-                    selectedAnswer = answerRepository.findByIdAndQuestionId(ansReq.getSelectedAnswerId(), question.getId())
-                            .orElseThrow(() -> new RuntimeException("Đáp án không hợp lệ cho câu hỏi"));
+                    selectedAnswer = answerRepository
+                            .findByIdAndQuestionId(ansReq.getSelectedAnswerId(), question.getId())
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                    "câu trả lời cho câu hỏi không phù hợp"));
                     isCorrect = Boolean.TRUE.equals(selectedAnswer.getIsCorrect());
                     if (isCorrect) {
                         totalCorrect++;
@@ -71,7 +76,6 @@ public class ExamAttemptService {
                         .selectedAnswer(selectedAnswer)
                         .isCorrect(isCorrect)
                         .build();
-
                 attempt.addStudentAnswer(studentAnswer);
             }
         }
@@ -79,7 +83,8 @@ public class ExamAttemptService {
         attempt.setTotalCorrect(totalCorrect);
         int totalQuestions = attempt.getTest().getQuestions().size();
         Integer testTotalScore = attempt.getTest().getTotalScore();
-        if (testTotalScore == null) testTotalScore = 10; // Default 10 points system
+        if (testTotalScore == null)
+            testTotalScore = 10; // Default 10 points system
         if (totalQuestions > 0) {
             double rawScore = ((double) totalCorrect / totalQuestions) * testTotalScore;
             attempt.setScore((double) Math.round(rawScore * 100) / 100); // 2 decimal places
@@ -90,8 +95,8 @@ public class ExamAttemptService {
         return mapToResponse(attempt);
     }
 
-    private ExamAttemptResponse mapToResponse(ExamAttempt attempt) {
-        ExamAttemptResponse dto = new ExamAttemptResponse();
+    private ExamAttemptSubmit mapToResponse(ExamAttempt attempt) {
+        ExamAttemptSubmit dto = new ExamAttemptSubmit();
         dto.setId(attempt.getId());
         dto.setUserId(attempt.getUser().getId());
         dto.setTestId(attempt.getTest().getId());
@@ -100,5 +105,14 @@ public class ExamAttemptService {
         dto.setScore(attempt.getScore());
         dto.setTotalCorrect(attempt.getTotalCorrect());
         return dto;
+    }
+
+    private ExamAttemptStart maptoStart(ExamAttempt attempt) {
+        ExamAttemptStart start = new ExamAttemptStart();
+        start.setId(attempt.getId());
+        start.setTestId(attempt.getTest().getId());
+        start.setUserId(attempt.getUser().getId());
+        start.setStartTime(attempt.getStartTime());
+        return start;
     }
 }
