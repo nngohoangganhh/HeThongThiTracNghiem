@@ -120,12 +120,14 @@ public class ExamService {
     }
 
     private Set<User> getValidStudents(Set<Long> ids) {
+        // Lấy tất cả user tồn tại, chỉ giữ những user có role STUDENT
         Set<User> users = userRepository.findAllById(ids).stream()
                         .filter(u -> u.getRoles().stream()
                         .anyMatch(r -> ROLE_STUDENT.equals(r.getCode())))
                         .collect(Collectors.toSet());
-        if (users.size() != ids.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User không hợp lệ");
+        if (users.isEmpty() && !ids.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Không tìm thấy user hợp lệ có role STUDENT");
         }
         return users;
     }

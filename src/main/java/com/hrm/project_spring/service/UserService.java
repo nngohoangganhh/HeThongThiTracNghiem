@@ -128,10 +128,18 @@ public class UserService {
                     .permissions(permissionCode)
                     .build();
         }
-        private UserResponseDto mapTo (User user ){
-           return UserResponseDto.builder()
-                   .username(user.getUsername())
-                   .build();
+        private UserResponseDto mapTo(User user) {
+            String roleName = null;
+            if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+                roleName = user.getRoles().iterator().next().getCode();
+            }
+            return UserResponseDto.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .fullName(user.getFullName())
+                    .email(user.getEmail())
+                    .roleName(roleName)
+                    .build();
         }
     }
 

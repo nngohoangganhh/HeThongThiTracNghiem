@@ -165,7 +165,7 @@ public class AnswerService{
         return "single".equalsIgnoreCase(type)
                 || " duy nhất".equalsIgnoreCase(type)
                 || "SINGLE_CHOICE".equalsIgnoreCase(type)
-                || "MULTIPLE_CHOICE".equalsIgnoreCase(type); // As seen in DataInitializer
+                    || "MULTIPLE_CHOICE".equalsIgnoreCase(type); // As seen in DataInitializer
     }
 
     // viết 1API mới cho phep sửa nhiều đáp án cùng lúc

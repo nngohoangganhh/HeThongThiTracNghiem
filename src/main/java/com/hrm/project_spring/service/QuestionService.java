@@ -24,7 +24,7 @@ import java.util.List;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-
+//1
     public PageResponse<QuestionResponse> getAllQuestion(int pageNo, int pageSize) {
         Page<Question> page = questionRepository.findAll(PageRequest.of(pageNo, pageSize));
         List<QuestionResponse> data = page.getContent()
@@ -40,7 +40,7 @@ public class QuestionService {
                 .last(page.isLast())
                 .build();
     }
-
+//2
     public QuestionResponse getQuestionById(Long id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
@@ -62,7 +62,7 @@ public class QuestionService {
         Question saved = questionRepository.save(question);
         return QuestionMapper.toResponse(saved);
     }
-
+//3
     public QuestionResponse update(Long id, QuestionRequest request) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found"));
@@ -72,7 +72,7 @@ public class QuestionService {
         Question updated = questionRepository.save(question);
         return QuestionMapper.toResponse(updated);
     }
-
+//4
     public void delete(Long id) {
         if (!questionRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");

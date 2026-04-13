@@ -137,13 +137,32 @@ public class TestService {
         return mapToResponse(saved);
     }
     public TestResponse mapToResponse(Test test) {
+        // Map questions + answers (không expose isCorrect)
+        List<TestResponse.QuestionDto> questionDtos = test.getQuestions() == null ? List.of() :
+            test.getQuestions().stream().map(q -> {
+                List<TestResponse.AnswerDto> answerDtos = q.getAnswers() == null ? List.of() :
+                    q.getAnswers().stream().map(a ->
+                        TestResponse.AnswerDto.builder()
+                            .id(a.getId())
+                            .content(a.getContent())
+                            .build()
+                    ).toList();
+                return TestResponse.QuestionDto.builder()
+                    .id(q.getId())
+                    .content(q.getContent())
+                    .difficulty(q.getDifficulty())
+                    .answers(answerDtos)
+                    .build();
+            }).toList();
+
         return TestResponse.builder()
                 .id(test.getId())
                 .examId(test.getExam() != null ? test.getExam().getId() : null)
                 .title(test.getTitle())
                 .durationMinutes(test.getDurationMinutes())
                 .totalScore(test.getTotalScore())
-                .createAt(LocalTime.from(test.getCreateAt()))
+                .createAt(test.getCreateAt() != null ? LocalTime.from(test.getCreateAt()) : null)
+                .questions(questionDtos)
                 .build();
     }
 }

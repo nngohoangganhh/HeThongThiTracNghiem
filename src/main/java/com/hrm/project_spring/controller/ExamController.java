@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -104,7 +105,8 @@ public class ExamController {
                         .success(true)
                         .status(200)
                         .message("lấy danh sách học sinh theo id kỳ thi thành công")
-                        .data((List<StudentResponse>) examService.getStudentsByExamId(examId))
+                        // Fix: Wrap Set<StudentResponse> into List to avoid ClassCastException
+                        .data(new ArrayList<>(examService.getStudentsByExamId(examId)))
                         .build()
         );
     }
