@@ -3,7 +3,9 @@ package com.hrm.project_spring.controller;
 import com.hrm.project_spring.dto.common.ApiResponse;
 import com.hrm.project_spring.dto.auth.AuthResponse;
 import com.hrm.project_spring.dto.auth.ChangePasswordRequest;
+import com.hrm.project_spring.dto.auth.ForgotPasswordRequest;
 import com.hrm.project_spring.dto.auth.LoginRequest;
+import com.hrm.project_spring.dto.auth.ResetPasswordRequest;
 import com.hrm.project_spring.dto.user.UpdateProfileRequest;
 import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
@@ -20,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(@RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody UserRequest request) {
         return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
                 .success(true)
                 .status(200)
@@ -30,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
                 .success(true)
                 .status(200)
@@ -85,6 +87,28 @@ public class AuthController {
                 .status(200)
                 .message("Cập nhật thông tin thành công")
                 .data(authService.updateProfile(request))
+                .build());
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .status(200)
+                .message("Hướng dẫn đặt lại mật khẩu đã được gửi qua email")
+                .data(null)
+                .build());
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .status(200)
+                .message("Mật khẩu đã được đặt lại thành công")
+                .data(null)
                 .build());
     }
 }

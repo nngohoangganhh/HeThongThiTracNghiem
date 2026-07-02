@@ -6,6 +6,7 @@ import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
 import com.hrm.project_spring.dto.user.UserResponseDto;
 import com.hrm.project_spring.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,7 +49,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('USER:CREATE')")
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody UserRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .success(true)
@@ -60,7 +61,7 @@ public class UserController {
     }
     @PreAuthorize("hasAuthority('USER:UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>>updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>>updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .success(true)

@@ -20,12 +20,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.hrm.project_spring.dto.auth.ForgotPasswordRequest;
+import com.hrm.project_spring.dto.auth.ResetPasswordRequest;
+import java.util.UUID;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
     @Lazy
@@ -127,5 +133,39 @@ public class AuthService {
         userRepository.save(user);
 
         return getProfile();
+    }
+
+    // ======================== NEW: QUÊN MẬT KHẨU ========================
+
+    public void forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Email không tồn tại trong hệ thống"));
+
+        // Tạo token ngẫu nhiên
+        String token = UUID.randomUUID().toString();
+        user.setResetPasswordToken(token);
+        user.setResetPasswordExpiry(LocalDateTime.now().plusMinutes(15)); // Hết hạn sau 15 phút
+        userRepository.save(user);
+
+        // Gửi email
+        emailService.sendResetPasswordEmail(user.getEmail(), token);
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByResetPasswordToken(request.getToken())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token không hợp lệ hoặc không tồn tại"));
+
+        // Kiểm tra thời hạn token
+        if (user.getResetPasswordExpiry().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token đã hết hạn");
+        }
+
+        // Cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        // Xóa token
+        user.setResetPasswordToken(null);
+        user.setResetPasswordExpiry(null);
+        
+        userRepository.save(user);
     }
 }

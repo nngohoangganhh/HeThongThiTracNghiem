@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -65,6 +66,16 @@ public class GlobalExceptionHandler {
                  false,HttpStatus.BAD_REQUEST.value(),be.getMessage(),null
     );
       return ResponseEntity.badRequest().body(response);
+    }
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Map<String,String>>> handleConstraintViolation(ConstraintViolationException ex){
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation ->
+                errors.put(violation.getPropertyPath().toString(), violation.getMessage())
+        );
+        ApiResponse<Map<String,String>> response = new ApiResponse<>(false, 400, "Validation failed", errors);
+        return ResponseEntity.badRequest().body(response);
     }
 
 }

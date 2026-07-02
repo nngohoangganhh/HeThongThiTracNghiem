@@ -33,7 +33,13 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers(
+                    "/api/auth/login", 
+                    "/api/auth/register",
+                    "/api/auth/forgot-password",
+                    "/api/auth/reset-password",
+                    "/error"
+                ).permitAll()
                 // Swagger UI & OpenAPI docs
                 .requestMatchers(
                     "/swagger-ui.html",

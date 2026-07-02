@@ -8,6 +8,8 @@ import com.hrm.project_spring.dto.student.StudentResponse;
 import com.hrm.project_spring.entity.Exam;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.mapper.ExamMapper;
+import com.hrm.project_spring.entity.ClassRoom;
+import com.hrm.project_spring.repository.ClassRoomRepository;
 import com.hrm.project_spring.repository.ExamRepository;
 import com.hrm.project_spring.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,7 @@ public class ExamService {
 
     private final ExamRepository examRepository;
     private final UserRepository userRepository;
+    private final ClassRoomRepository classRoomRepository;
 
     private static final String ROLE_STUDENT = "STUDENT";
 
@@ -97,6 +100,18 @@ public class ExamService {
 
         Set<User> students = getValidStudents(studentIds);
         students.removeAll(exam.getStudents()); // tránh duplicate
+        exam.getStudents().addAll(students);
+        return ExamMapper.toDetailResponse(exam);
+    }
+
+    public ExamDetailResponse assignClassToExam(Long examId, Long classId) {
+        Exam exam = examRepository.findByIdWithStudents(examId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exam not found"));
+        ClassRoom classRoom = classRoomRepository.findById(classId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Class not found"));
+
+        Set<User> students = classRoom.getStudents();
+        students.removeAll(exam.getStudents());
         exam.getStudents().addAll(students);
         return ExamMapper.toDetailResponse(exam);
     }

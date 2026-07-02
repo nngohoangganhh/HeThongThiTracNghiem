@@ -136,4 +136,17 @@ public class ExamController {
                 .data(examService.removeStudentsFromExam(examId, request.getStudentIds()))
                 .build());
     }
+
+    @PreAuthorize("hasAuthority('EXAM:UPDATE')")
+    @PostMapping("/{examId}/classes/{classId}")
+    public ResponseEntity<ApiResponse<ExamDetailResponse>> assignClass(
+            @PathVariable Long examId,
+            @PathVariable Long classId) {
+        return ResponseEntity.ok(ApiResponse.<ExamDetailResponse>builder()
+                .success(true)
+                .status(200)
+                .message("Gán lớp học vào kỳ thi thành công")
+                .data(examService.assignClassToExam(examId, classId))
+                .build());
+    }
 }
