@@ -1,10 +1,10 @@
 package com.hrm.project_spring.service;
 
 import com.hrm.project_spring.dto.common.PageResponse;
-import com.hrm.project_spring.dto.role.RoleResponse;
 import com.hrm.project_spring.dto.user.UserRequest;
 import com.hrm.project_spring.dto.user.UserResponse;
 import com.hrm.project_spring.dto.user.UserResponseDto;
+import com.hrm.project_spring.entity.ClassRoom;
 import com.hrm.project_spring.entity.Role;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.enums.UserStatus;
@@ -202,7 +202,6 @@ public class UserService {
     }
 
 
-
     // ======================== MAPPING ========================
 
     private UserResponse mapToResponse(User user) {
@@ -235,19 +234,24 @@ public class UserService {
                 .permissions(permissionCode)
                 .build();
     }
-
     private UserResponseDto mapTo(User user) {
         String roleName = null;
         if (user.getRoles() != null && !user.getRoles().isEmpty()) {
             roleName = user.getRoles().iterator().next().getCode();
         }
+        String classCode = null;
+        if (user.getClassRooms() != null && !user.getClassRooms().isEmpty()) {
+            classCode = user.getClassRooms().stream().map(ClassRoom::getCode).findFirst().orElse(null);
+        }
+
         return UserResponseDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .status(user.getStatus())
-                .roleName(roleName)
+                .classCode(classCode)
+                .roleNames(roleName)
                 .build();
     }
 }

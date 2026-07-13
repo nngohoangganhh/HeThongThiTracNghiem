@@ -83,5 +83,8 @@ public class User {
         return id != null && id.equals(user.id);
     }
 
+    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
+    private Set<ClassRoom> classRooms = new HashSet<>();
+
 
 }
