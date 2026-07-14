@@ -95,7 +95,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('LOCK:USER')")
     @PatchMapping("/{userid}/lock")
     public ResponseEntity<ApiResponse<UserResponse>> lockUser(@PathVariable Long id, @Valid @RequestBody LockedRequest request) {
-        UserResponse response = userService.lockUser(id,request);
+        UserResponse response = userService.lockUser(id, request);
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
                 .success(true)
                 .code(200)
