@@ -84,7 +84,7 @@ public class UserController {
      * UC08-E3: Gửi lại email kích hoạt khi SMTP thất bại lần đầu.
      */
     @PreAuthorize("hasAuthority('USER:CREATE')")
-    @PostMapping("/{id}/resend-activation")
+    @PostMapping("/{userid}/resend-activation")
     public ResponseEntity<ApiResponse<Void>> resendActivation(@PathVariable Long id) {
         userService.resendActivationEmail(id);
         return ResponseEntity.ok(
