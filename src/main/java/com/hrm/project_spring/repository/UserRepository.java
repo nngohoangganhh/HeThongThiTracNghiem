@@ -1,6 +1,9 @@
 package com.hrm.project_spring.repository;
 
 import com.hrm.project_spring.entity.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,5 +42,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // ===== Activation token =====
 
     Optional<User> findByActivationToken(String activationToken);
+
+    boolean existsByUsernameAndIdNot(@NotNull(message = "username không đuợc để trống ") String username, Long id);
+
+    boolean existsByEmailAndIdNot(@NotBlank(message = "Email không được trống") @Email(message = "Email không đúng định dạng") String email, Long id);
+
+    boolean existsByStudentCodeAndIdNot(String studentCode, Long id);
+
+    boolean existsByEmployeeCodeAndIdNot(String employeeCode, Long id);
 }
 

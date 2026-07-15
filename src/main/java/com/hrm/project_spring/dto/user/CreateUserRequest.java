@@ -42,10 +42,10 @@ public class CreateUserRequest {
     private String employeeCode;
 
     @NotNull(message = "Role không hợp lệ.")
-    private Long roleId;
+    private Long roleIds;
 
     // Bắt buộc nếu role = Student
-    private Long classId;
+    private Long classIds;
 
     @Pattern(regexp = "^(0|\\+84)(\\d{9,10})$", message = "Số điện thoại Việt Nam không hợp lệ.")
     private String phone;

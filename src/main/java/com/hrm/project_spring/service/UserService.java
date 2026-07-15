@@ -24,7 +24,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,7 +46,6 @@ public class UserService {
 
     public PageResponse<UserResponseDto> getAllUsers(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-
         Page<User> users = userRepository.findAll(pageable);
         List<UserResponseDto> content =
                 users.getContent()
@@ -68,14 +70,6 @@ public class UserService {
 
     // ======================== TẠO USER (UC08 - SRS) ========================
 
-    /**
-     * UC08: Tạo user theo đúng SRS.
-     * - Admin KHÔNG nhập mật khẩu → hệ thống tự sinh 12 ký tự ngẫu nhiên.
-     * - Mặc định status = PENDING, gửi email kích hoạt (TTL 7 ngày).
-     * - Nếu skipActivation = true (Flow A2): set ACTIVE ngay, trả password 1 lần.
-     * - Kiểm tra unique email/username kể cả user soft deleted (BR-017).
-     * - ClassId bắt buộc nếu role = STUDENT.
-     */
     @Transactional
     public CreateUserResponse createUser(CreateUserRequest request) {
 
@@ -88,16 +82,16 @@ public class UserService {
         }
 
         // === 2. Validate role tồn tại ===
-        Role role = roleRepository.findById(request.getRoleId())
+        Role role = roleRepository.findById(request.getRoleIds())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role không hợp lệ."));
 
         // === 3. Nếu role = STUDENT → classId bắt buộc ===
         ClassRoom classRoom = null;
         if ("STUDENT".equalsIgnoreCase(role.getCode())) {
-            if (request.getClassId() == null) {
+            if (request.getClassIds() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lớp học không hợp lệ. ClassId bắt buộc khi role là Student.");
             }
-            classRoom = classRoomRepository.findById(request.getClassId())
+            classRoom = classRoomRepository.findById(request.getClassIds())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lớp học không hợp lệ."));
         }
 
@@ -226,39 +220,84 @@ public class UserService {
         user.setActivationToken(newToken);
         user.setActivationTokenExpiry(LocalDateTime.now().plusDays(7));
         userRepository.save(user);
-
         emailService.sendActivationEmail(user.getEmail(), user.getFullName(), newToken);
     }
 
     // ======================== CẬP NHẬT USER (Admin CRUD) ========================
-
     @Transactional
-    public UserResponse updateUser(Long id, UserRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User không tồn tại"));
-
-        if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username đã bị trùng");
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User không tồn tại"
+                ));
+        if (user.getStatus() == UserStatus.DELETED) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Không thể cập nhật tài khoản đã bị xóa"
+            );
         }
-        if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email đã bị trùng");
+        // 1. Kiểm tra username
+        if (userRepository.existsByUsernameAndIdNot(
+                request.getUsername(),
+                id
+        )) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Username đã được sử dụng"
+            );
+        }
+        // 2. Kiểm tra email
+        if (userRepository.existsByEmailAndIdNot(
+                request.getEmail(),
+                id
+        )) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email đã được sử dụng"
+            );
+        }
+        // 3. Kiểm tra studentCode
+        if (request.getStudentCode() != null
+                && !request.getStudentCode().isBlank()
+                && userRepository.existsByStudentCodeAndIdNot(
+                request.getStudentCode(),
+                id
+        )) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Mã sinh viên đã tồn tại"
+            );
+        }
+        // 4. Kiểm tra employeeCode
+        if (request.getEmployeeCode() != null
+                && !request.getEmployeeCode().isBlank()
+                && userRepository.existsByEmployeeCodeAndIdNot(
+                request.getEmployeeCode(),
+                id
+        )) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Mã nhân viên đã tồn tại"
+            );
         }
 
+        // 5. Validate ngày sinh
+        validateBirthDate(request.getBirthDate());
+
+        // 7. Cập nhật thông tin
         user.setUsername(request.getUsername());
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
         user.setEmail(request.getEmail());
         user.setFullName(request.getFullName());
-
-        if (request.getRoleIds() != null) {
-            Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoleIds()));
-            user.setRoles(roles);
-        }
-
+        user.setPhone(request.getPhone());
+        user.setBirthDate(request.getBirthDate());
+        user.setGender(request.getGender());
+        user.setStudentCode(request.getStudentCode());
+        user.setEmployeeCode(request.getEmployeeCode());
+        // Lưu trước để đảm bảo user tồn tại
         User updatedUser = userRepository.save(user);
         return mapToResponse(updatedUser);
     }
-
     // ======================== XÓA USER – SOFT DELETE  ========================
 
     @Transactional
@@ -351,26 +390,49 @@ public class UserService {
     private UserResponse mapToResponse(User user) {
         List<String> roleCode = null;
         List<String> permissionCode = null;
+        List<String> classCode = null;
 
         if (user.getRoles() != null) {
-            roleCode = user.getRoles().stream().map(Role::getCode).collect(Collectors.toList());
+            roleCode = user.getRoles()
+                    .stream()
+                    .map(Role::getCode)
+                    .collect(Collectors.toList());
         }
         if (user.getRoles() != null) {
-            permissionCode = user.getRoles().stream().filter(r -> r.getPermissions() != null).flatMap(r -> r.getPermissions().stream()).map(p -> p.getAction() + ":" + p.getFeature().getCode()).distinct().collect(Collectors.toList());
+            permissionCode = user.getRoles()
+                    .stream()
+                    .filter(r -> r.getPermissions() != null)
+                    .flatMap(r -> r.getPermissions().stream())
+                    .map(p -> p.getAction() + ":" + p.getFeature().getCode())
+                    .distinct()
+                    .collect(Collectors.toList());
         }
-        return UserResponse
-                .builder()
+        if (user.getClassRooms() != null) {
+            classCode = user.getClassRooms()
+                    .stream()
+                    .map(ClassRoom::getCode)
+                    .collect(Collectors.toList());
+        }
+        return UserResponse.builder()
                 .id(user.getId())
-                .email(user.getEmail())
                 .username(user.getUsername())
+                .email(user.getEmail())
                 .fullName(user.getFullName())
+                .phone(user.getPhone())
+                .birthDate(user.getBirthDate())
+                .gender(user.getGender())
+                .studentCode(user.getStudentCode())
+                .employeeCode(user.getEmployeeCode())
+                .status(user.getStatus())
                 .lastLoginAt(user.getLastLoginAt())
                 .requirePasswordChange(user.getRequirePasswordChange())
-                .status(user.getStatus()).createdAt(user.getCreatedAt())
+                .createdAt(user.getCreatedAt())
                 .roles(roleCode)
                 .permissions(permissionCode)
+                .classCodes(classCode)
                 .build();
     }
+
 
     private UserResponseDto mapTo(User user) {
         String roleName = null;
@@ -469,4 +531,21 @@ public class UserService {
                 .activationMessage(activationMessage)
                 .build();
     }
+
+    private void validateBirthDate(LocalDate birthDate) {
+        if (birthDate == null) {
+            return;
+        }
+
+        int currentYear = LocalDate.now().getYear();
+        int birthYear = birthDate.getYear();
+
+        if (birthYear < 1920 || birthYear > currentYear - 5) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Ngày sinh không hợp lệ"
+            );
+        }
+    }
+
 }

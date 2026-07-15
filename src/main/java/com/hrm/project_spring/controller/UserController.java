@@ -85,7 +85,7 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('USER:CREATE')")
     @PostMapping("/{userid}/resend-activation")
-    public ResponseEntity<ApiResponse<Void>> resendActivation(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> resendActivation(@RequestParam Long id) {
         userService.resendActivationEmail(id);
         return ResponseEntity.ok(
                 ApiResponse.<Void>builder()
@@ -100,7 +100,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequest request) {
+            @Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(
                 ApiResponse.<UserResponse>builder()
                         .success(true)
@@ -165,7 +165,6 @@ public class UserController {
                         .data(userService.assignRoles(userId, request.getRoleIds()))
                         .build());
     }
-
 
     @PreAuthorize("hasAuthority('ROLE:UPDATE')")
     @DeleteMapping("/{userId}/roles/{roleId}")
