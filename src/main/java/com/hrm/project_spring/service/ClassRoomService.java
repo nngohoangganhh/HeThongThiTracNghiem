@@ -80,6 +80,13 @@ public class ClassRoomService {
                 .last(page.isLast())
                 .build();
     }
+    public ClassRoomResponse getClassRoom(Long id){
+        ClassRoom classRoom = classRoomRepository.findById(id).orElseThrow(
+                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND," Không tìm thấy lớp học "));
+        return mapToResponse(classRoom);
+    }
+
+
 
     public ClassRoomResponse assignStudents(Long id, AssignStudentsToClassRequest request) {
         ClassRoom classRoom = classRoomRepository.findById(id)

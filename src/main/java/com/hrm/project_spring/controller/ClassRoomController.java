@@ -32,6 +32,18 @@ public class ClassRoomController {
                 .build());
     }
 
+
+    @PreAuthorize("hasAuthority('CLASS:READ')")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ClassRoomResponse>> getClassRoom(@PathVariable Long id ){
+        return ResponseEntity.ok(ApiResponse.<ClassRoomResponse>builder()
+                .success(true)
+                .code(200)
+                .message("Lấy chi tiết lớp học thành công")
+                .data(classRoomService.getClassRoom(id))
+                .build());
+    }
+
     @PreAuthorize("hasAuthority('CLASS:CREATE')")
     @PostMapping
     public ResponseEntity<ApiResponse<ClassRoomResponse>> createClassRoom(

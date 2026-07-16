@@ -84,7 +84,7 @@ public class UserController {
      * UC08-E3: Gửi lại email kích hoạt khi SMTP thất bại lần đầu.
      */
     @PreAuthorize("hasAuthority('USER:CREATE')")
-    @PostMapping("/{userid}/resend-activation")
+    @PostMapping("/{id}/resend-activation")
     public ResponseEntity<ApiResponse<Void>> resendActivation(@RequestParam Long id) {
         userService.resendActivationEmail(id);
         return ResponseEntity.ok(
@@ -128,7 +128,7 @@ public class UserController {
     //========================= LOCK/UNLOCK =============================
 
     @PreAuthorize("hasAuthority('LOCK:USER')")
-    @PatchMapping("/{userid}/lock")
+    @PatchMapping("/{id}/lock")
     public ResponseEntity<ApiResponse<UserResponse>> lockUser(@PathVariable Long id, @Valid @RequestBody LockedRequest request) {
         UserResponse response = userService.lockUser(id, request);
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
@@ -140,7 +140,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('UNLOCK:USER')")
-    @PatchMapping("/{userid}/unlock")
+    @PatchMapping("/{id}/unlock")
     public ResponseEntity<ApiResponse<UserResponse>> unlockUser(@PathVariable Long id) {
         UserResponse response = userService.unlockUser(id);
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
