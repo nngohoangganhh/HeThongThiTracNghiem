@@ -3,9 +3,13 @@ package com.hrm.project_spring.controller;
 import com.hrm.project_spring.dto.common.ApiResponse;
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.user.*;
-import com.hrm.project_spring.service.UserService;
+import com.hrm.project_spring.service.user.UserExportService;
+import com.hrm.project_spring.service.user.UserService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserExportService userExportService;
 
     // ======================== USER CRUD (Admin) ========================
 
@@ -180,6 +185,14 @@ public class UserController {
                         .build()
         );
     }
-
-
+    @PreAuthorize("hasAuthority('EXPORT:USER')")
+    @GetMapping(value = "/export", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> exportUsers() {
+        byte[] fileData = userExportService.exportUsers();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"users.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .contentLength(fileData.length)
+                .body(fileData);
+    }
 }

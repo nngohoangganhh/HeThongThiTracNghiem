@@ -1,4 +1,4 @@
-package com.hrm.project_spring.service;
+package com.hrm.project_spring.service.user;
 
 import com.hrm.project_spring.dto.common.PageResponse;
 import com.hrm.project_spring.dto.user.*;
@@ -10,6 +10,7 @@ import com.hrm.project_spring.repository.ClassRoomRepository;
 import com.hrm.project_spring.repository.RefreshTokenRepository;
 import com.hrm.project_spring.repository.RoleRepository;
 import com.hrm.project_spring.repository.UserRepository;
+import com.hrm.project_spring.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
