@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:10000}
   address: 0.0.0.0
 
 spring:
@@ -30,9 +30,9 @@ spring:
             enable: true
 
 jwt:
-  secret-key: ${JWT_SECRET:local-secret-key-must-have-at-least-32-characters}
-  access-token-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
-  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+  secret: ${JWT_SECRET:MyVerySecureSecretKeyThatIsAtLeast256BitsLongForJWTSigningPurposesOnly}
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:3600000}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}
 
 logging:
   level:
