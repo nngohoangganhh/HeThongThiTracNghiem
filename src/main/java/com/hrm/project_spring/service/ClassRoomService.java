@@ -36,6 +36,7 @@ public class ClassRoomService {
         ClassRoom classRoom = ClassRoom.builder()
                 .code(request.getCode())
                 .name(request.getName())
+                .academicYear(request.getAcademicYear())
                 .description(request.getDescription())
                 .build();
 
@@ -51,9 +52,9 @@ public class ClassRoomService {
         if (!classRoom.getCode().equals(request.getCode()) && classRoomRepository.existsByCode(request.getCode())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mã lớp đã tồn tại");
         }
-
         classRoom.setCode(request.getCode());
         classRoom.setName(request.getName());
+        classRoom.setAcademicYear(request.getAcademicYear());
         classRoom.setDescription(request.getDescription());
 
         classRoom = classRoomRepository.save(classRoom);
@@ -123,6 +124,7 @@ public class ClassRoomService {
                 .code(classRoom.getCode())
                 .name(classRoom.getName())
                 .description(classRoom.getDescription())
+                .academicYear(classRoom.getAcademicYear())
                 .createdAt(classRoom.getCreatedAt())
                 .studentCount(classRoom.getStudents() != null ? classRoom.getStudents().size() : 0)
                 .build();

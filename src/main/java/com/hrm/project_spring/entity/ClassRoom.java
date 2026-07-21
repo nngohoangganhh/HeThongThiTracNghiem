@@ -26,12 +26,13 @@ public class ClassRoom {
     @Column(nullable = false)
     private String name;
 
-    private String description;
+    @Column(name = "academic_year")
+    private String academicYear;
 
+    private String description;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
     @ManyToMany
     @JoinTable(
         name = "classroom_students",

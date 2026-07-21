@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
     Optional<ClassRoom> findByCode(String code);
+
     boolean existsByCode(String code);
+
 }

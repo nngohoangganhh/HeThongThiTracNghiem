@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO tạo user theo SRS UC08.
@@ -42,10 +43,10 @@ public class CreateUserRequest {
     private String employeeCode;
 
     @NotNull(message = "Role không hợp lệ.")
-    private Long roleIds;
+    private List<Long> roleIds;
 
     // Bắt buộc nếu role = Student
-    private Long classIds;
+    private List<Long> classIds;
 
     @Pattern(regexp = "^(0|\\+84)(\\d{9,10})$", message = "Số điện thoại Việt Nam không hợp lệ.")
     private String phone;

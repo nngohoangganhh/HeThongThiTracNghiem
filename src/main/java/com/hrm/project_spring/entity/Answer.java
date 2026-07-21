@@ -1,7 +1,12 @@
 package com.hrm.project_spring.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -11,18 +16,25 @@ import lombok.*;
 @Table(name = "answers")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Question question;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(name = "is_correct", nullable = false)
-    private Boolean isCorrect;
+    private Boolean isCorrect = false;
+
+
+    @Column(name = "score_weight", precision = 5, scale = 2)
+    private BigDecimal scoreWeight = BigDecimal.ONE;
+
+    @Column(name = "order_num", nullable = false)
+    private Integer orderNum;
+
+
 }

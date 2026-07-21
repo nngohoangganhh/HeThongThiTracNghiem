@@ -36,13 +36,8 @@ public class AuthService {
 
         // Bước 1: Tìm user (tìm theo cả username lẫn email)
         User user = userRepository.findByUsernameOrEmail(
-                        request.getUsernameOrEmail(),
-                        request.getUsernameOrEmail()
-                )
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Tài khoản không tồn tại"
-                ));
+                request.getUsernameOrEmail(),
+                request.getUsernameOrEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tài khoản không tồn tại"));
 
         // Bước 2: Kiểm tra trạng thái tài khoản TRƯỚC khi check password
         // DELETED: giả vờ không tồn tại (bảo mật – không lộ user bị xóa)
@@ -101,9 +96,7 @@ public class AuthService {
 
         // Bước 4: Kiểm tra mật khẩu quá hạn 90 ngày (BR-009)
         // passwordChangedAt mặc định = createdAt, nên user mới sẽ không bị flag ngay
-        boolean requirePasswordChange =
-                user.getPasswordChangedAt() == null ||
-                        user.getPasswordChangedAt().isBefore(LocalDateTime.now().minusDays(90));
+        boolean requirePasswordChange = user.getPasswordChangedAt() == null || user.getPasswordChangedAt().isBefore(LocalDateTime.now().minusDays(90));
         user.setRequirePasswordChange(requirePasswordChange);
 
         // Bước 5: Tạo JWT Access Token và Refresh Token
@@ -245,7 +238,6 @@ public class AuthService {
     }
 
     //  ĐĂNG XUẤT
-
     @Transactional
     public AuthResponse logout() {
 
@@ -278,7 +270,6 @@ public class AuthService {
     }
 
     //  QUÊN MẬT KHẨU
-
     @Transactional
     public void forgotPassword(ForgotPasswordRequest request) {
 

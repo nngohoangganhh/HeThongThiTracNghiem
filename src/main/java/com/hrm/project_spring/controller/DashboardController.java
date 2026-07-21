@@ -32,6 +32,7 @@ public class DashboardController {
                 .data(dashboardService.getAdminDashboard())
                 .build());
     }
+
     @PreAuthorize("hasAuthority('EXAM:START')")
     @GetMapping("/student")
     public ResponseEntity<ApiResponse<StudentDashboardResponse>> getStudentDashboard() {
@@ -42,7 +43,6 @@ public class DashboardController {
                 .data(dashboardService.getStudentDashboard())
                 .build());
     }
-
 
     @PreAuthorize("hasAuthority('EXAM:START')")
     @GetMapping("/my-exams")

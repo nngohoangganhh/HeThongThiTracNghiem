@@ -80,17 +80,35 @@ public class UserService {
         }
 
         // === 2. Validate role tồn tại ===
-        Role role = roleRepository.findById(request.getRoleIds())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role không hợp lệ."));
+        List<Role> roles = roleRepository.findAllById(request.getRoleIds());
+
+        if (roles.size() != request.getRoleIds().size()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Có role không hợp lệ."
+            );
+        }
 
         // === 3. Nếu role = STUDENT → classId bắt buộc ===
-        ClassRoom classRoom = null;
-        if ("STUDENT".equalsIgnoreCase(role.getCode())) {
-            if (request.getClassIds() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lớp học không hợp lệ. ClassId bắt buộc khi role là Student.");
+        boolean isStudent = roles.stream()
+                .anyMatch(r -> "STUDENT".equalsIgnoreCase(r.getCode()));
+        Set<ClassRoom> classRooms = new HashSet<>();
+        if (isStudent) {
+            if (request.getClassIds() == null || request.getClassIds().isEmpty()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "ClassId bắt buộc khi role là Student."
+                );
             }
-            classRoom = classRoomRepository.findById(request.getClassIds())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lớp học không hợp lệ."));
+            List<ClassRoom> classrooms = classRoomRepository.findAllById(request.getClassIds());
+
+            if (classrooms.size() != request.getClassIds().size()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Có lớp học không hợp lệ."
+                );
+            }
+            classRooms.addAll(classrooms);
         }
 
         // === 4. Validate studentCode / employeeCode unique ===
@@ -134,7 +152,7 @@ public class UserService {
                 .studentCode(request.getStudentCode())
                 .employeeCode(request.getEmployeeCode())
                 .status(initialStatus)
-                .roles(Set.of(role))
+                .roles(new HashSet<>(roles))
                 .build();
 
         // === 9. Nếu KHÔNG skip activation → sinh activation token (32 byte hex, TTL 7 ngày) ===
@@ -149,7 +167,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         // === 11. Gán sinh viên vào lớp học (nếu có) ===
-        if (classRoom != null) {
+        for (ClassRoom classRoom : classRooms) {
             classRoom.getStudents().add(savedUser);
             classRoomRepository.save(classRoom);
         }

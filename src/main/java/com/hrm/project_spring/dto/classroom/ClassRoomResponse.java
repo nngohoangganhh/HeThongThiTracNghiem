@@ -12,6 +12,7 @@ public class ClassRoomResponse {
     private String code;
     private String name;
     private String description;
+    private String academicYear;
     private LocalDateTime createdAt;
     private int studentCount;
 }

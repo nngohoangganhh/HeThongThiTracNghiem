@@ -1,6 +1,6 @@
 package com.hrm.project_spring.enums;
 
-public enum Type {
+public enum QuestionType {
     //1 chỉ chọn 1 đáp án
     MCQ_SINGLE,
     //2 chọn nhiều đáp án
