@@ -1,83 +1,100 @@
-# Exam Online System
+<h1 align="center">🎓 Exam Online System</h1>
 
-A RESTful backend system for managing online examinations, built with **Java Spring Boot**. The system supports authentication, role-based access control (RBAC), exam management, question banks, online test attempts, and reporting.
+<p align="center">
+A RESTful Online Examination System built with Spring Boot
+</p>
 
-> This project is designed for schools, training centers, and organizations that need a scalable online examination platform.
+<p align="center">
 
----
+![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green?style=for-the-badge&logo=springboot)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql)
+![JWT](https://img.shields.io/badge/JWT-Authentication-red?style=for-the-badge&logo=jsonwebtokens)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven)
+![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
-# Features
-
-- JWT Authentication & Authorization
-- Role-Based Access Control (RBAC)
-- User & Role Management
-- Question Bank Management
-- Exam & Test Management
-- Online Exam Attempts
-- Dashboard Statistics
-- RESTful APIs
-- Swagger API Documentation
+</p>
 
 ---
 
-# Tech Stack
+# 🚀 Overview
+
+Exam Online System là hệ thống thi trắc nghiệm trực tuyến được xây dựng bằng **Java Spring Boot**, hỗ trợ quản lý người dùng, phân quyền, ngân hàng câu hỏi, bài thi và kết quả làm bài.
+
+---
+
+# ✨ Features
+
+✅ JWT Authentication
+
+✅ Role-Based Access Control (RBAC)
+
+✅ User Management
+
+✅ Exam Management
+
+✅ Question Bank
+
+✅ Online Exam
+
+✅ Dashboard Statistics
+
+✅ Swagger API
+
+---
+
+# 🛠 Tech Stack
 
 | Category | Technology |
 |----------|------------|
-| Language | Java 17 |
-| Framework | Spring Boot |
-| Security | Spring Security, JWT |
-| ORM | Spring Data JPA, Hibernate |
-| Database | PostgreSQL |
-| Migration | Flyway |
-| Build Tool | Maven |
-| API Documentation | Swagger / OpenAPI |
-| Deployment | Docker, Render |
+| ☕ Language | Java 17 |
+| 🌱 Framework | Spring Boot |
+| 🔒 Security | Spring Security + JWT |
+| 🗄 Database | PostgreSQL |
+| 📦 ORM | Hibernate / JPA |
+| 📚 API Docs | Swagger |
+| 🚀 Deploy | Render |
+| 🐳 Container | Docker |
 
 ---
 
-# System Architecture
+# 🏗 Architecture
 
-```
-Client
-    │
- REST API
-    │
-Controller
-    │
-Service
-    │
-Repository
-    │
-PostgreSQL
+```text
+                Client
+                   │
+            Spring Security
+                   │
+             REST Controller
+                   │
+              Service Layer
+                   │
+            Repository Layer
+                   │
+              PostgreSQL
 ```
 
 ---
 
-# Main Modules
+# 📦 Modules
 
 | Module | Description |
 |---------|-------------|
-| Authentication | Login, JWT, Authorization |
-| User Management | CRUD users, assign roles |
-| Role Management | Manage system roles |
-| Permission Management | RBAC permissions |
-| Feature Management | Functional permissions |
-| Exam Management | Create and manage exams |
-| Test Management | Manage tests inside exams |
-| Question Management | Manage question bank |
-| Answer Management | Manage answers |
-| Classroom Management | Manage classrooms |
-| Exam Attempt | Student exam sessions |
-| Dashboard | System statistics |
+| 🔐 Authentication | Login, JWT, Refresh Token |
+| 👤 User | User Management |
+| 👥 Role | Role Management |
+| 🔑 Permission | RBAC |
+| 📝 Question | Question Bank |
+| 📚 Test | Test Management |
+| 🎯 Exam | Exam Management |
+| 🏫 Classroom | Classroom |
+| 📊 Dashboard | Statistics |
 
 ---
 
-# Security
+# 🔒 RBAC Model
 
-The project implements **Role-Based Access Control (RBAC)**.
-
-```
+```text
 User
    │
  Role
@@ -87,30 +104,9 @@ Permission
 Feature
 ```
 
-Example:
-
-```
-ADMIN
-    ├── User Management
-    ├── Role Management
-    ├── Exam Management
-    └── Dashboard
-
-TEACHER
-    ├── Question Management
-    ├── Exam Management
-    └── Grade Exams
-
-STUDENT
-    ├── Take Exam
-    └── View Results
-```
-
 ---
 
-# API Documentation
-
-Swagger UI
+# 📖 API Documentation
 
 ```
 http://localhost:8080/swagger-ui/index.html
@@ -118,113 +114,81 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-# Getting Started
+# ⚙ Getting Started
 
-## Clone repository
+### Clone project
 
 ```bash
 git clone https://github.com/nngohoangganhh/ExamOnlineSystem.git
 ```
 
-## Configure Database
-
-Update the database configuration in
-
-```
-application.yml
-```
-
-Example:
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/exam_online
-    username: postgres
-    password: your_password
-```
-
----
-
-## Run Flyway Migration
-
-The database schema will be created automatically when the application starts.
-
----
-
-## Start Project
+### Build
 
 ```bash
 mvn clean install
+```
 
+### Run
+
+```bash
 mvn spring-boot:run
 ```
 
-or
-
-```bash
-./mvnw spring-boot:run
-```
-
 ---
 
-# Project Structure
+# 📁 Project Structure
 
-```
+```text
 src
- ├── config
- ├── security
- ├── controller
- ├── service
- ├── repository
- ├── entity
- ├── dto
- ├── mapper
- ├── exception
- └── util
+├── config
+├── security
+├── controller
+├── service
+├── repository
+├── entity
+├── dto
+├── mapper
+├── exception
+└── util
 ```
 
 ---
 
-# Screenshots
+# 📸 Screenshots
 
-Coming soon.
+| Swagger | Database |
+|----------|----------|
+| *(Coming Soon)* | *(Coming Soon)* |
 
 ---
 
-# Deployment
+# 🚀 Deployment
 
 Backend
 
 ```
-https://your-render-url.onrender.com
-```
+https://hethongthitracnghiem-yb6s.onrender.com/swagger-ui/index.html#/)```
+...
 
-Swagger
 
-```
-https://your-render-url.onrender.com/swagger-ui/index.html
-```
 
----
+# 📌 Roadmap
 
-# Future Improvements
-
-- Unit Testing
-- Integration Testing
-- Docker Compose
-- GitHub Actions CI/CD
-- Redis Cache
-- Email Notification
-- Audit Logging
-- Monitoring (Prometheus + Grafana)
+- [x] JWT Authentication
+- [x] RBAC Authorization
+- [x] CRUD User
+- [x] CRUD Exam
+- [x] CRUD Question
+- [ ] Docker Compose
+- [ ] Unit Test
+- [ ] GitHub Actions
+- [ ] Redis Cache
+- [ ] Email Notification
 
 ---
 
-# Author
+# 👨‍💻 Author
 
-Ngô Hoàng Anh
+**Ngô Hoàng Anh**
 
-GitHub
-
-https://github.com/nngohoangganhh
+⭐ Nếu project hữu ích, hãy cho một Star nhé.
