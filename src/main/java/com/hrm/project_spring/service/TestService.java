@@ -150,8 +150,8 @@ public class TestService {
                     ).toList();
                 return TestResponse.QuestionDto.builder()
                     .id(q.getId())
-                    .content(q.getContent())
-                    .difficulty(q.getDifficulty())
+                    .content(q.getStem())
+                    .difficulty(q.getReferenceAnswer())
                     .answers(answerDtos)
                     .build();
             }).toList();

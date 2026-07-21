@@ -13,18 +13,13 @@ import java.util.Set;
 @Setter
 public class Tag {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     @Column(
-            unique=true,
-            nullable=false
+            unique=true, nullable=false
     )
     private String name;
-
 
     @ManyToMany(mappedBy="tags")
     private Set<Question> questions = new HashSet<>();

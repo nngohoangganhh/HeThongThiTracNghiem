@@ -172,7 +172,7 @@ public class ExamAttemptService {
 
                     return StudentAnswerDetailResponse.builder()
                             .questionId(sa.getQuestion().getId())
-                            .questionContent(sa.getQuestion().getContent())
+                            .questionContent(sa.getQuestion().getStem())
                             .selectedAnswerId(sa.getSelectedAnswer() != null ? sa.getSelectedAnswer().getId() : null)
                             .selectedAnswerContent(sa.getSelectedAnswer() != null ? sa.getSelectedAnswer().getContent() : null)
                             .correctAnswerId(correctAnswer != null ? correctAnswer.getId() : null)

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Table(name = "answers")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,7 +28,6 @@ public class Answer {
 
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect = false;
-
 
     @Column(name = "score_weight", precision = 5, scale = 2)
     private BigDecimal scoreWeight = BigDecimal.ONE;

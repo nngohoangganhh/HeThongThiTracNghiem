@@ -3,6 +3,7 @@ package com.hrm.project_spring.entity;
 import com.hrm.project_spring.enums.QuestionStatus;
 import com.hrm.project_spring.enums.QuestionType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +18,11 @@ import java.util.Set;
 @Table(name = "questions")
 @Getter
 @Setter
+@Builder
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
@@ -71,6 +73,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
