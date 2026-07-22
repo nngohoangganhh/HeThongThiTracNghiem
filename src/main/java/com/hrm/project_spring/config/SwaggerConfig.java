@@ -30,7 +30,7 @@ public class SwaggerConfig {
                                 4. Gọi các API khác bình thường
                                 
                                 ### Các role mặc định:
-                                - **ADMIN** – Toàn quyền quản lý hệ thống
+                                - **ADMIN** – Toàn quyền quản lý hệ thống 
                                 - **TEACHER** – Quản lý đề thi, câu hỏi
                                 - **STUDENT** – Thi và xem kết quả
                                 """)
