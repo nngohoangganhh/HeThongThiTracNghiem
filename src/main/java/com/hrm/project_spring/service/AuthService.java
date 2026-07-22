@@ -47,14 +47,12 @@ public class AuthService {
                     "Tài khoản không tồn tại"
             );
         }
-
         if (user.getStatus() == UserStatus.PENDING) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "Tài khoản chưa được kích hoạt. Vui lòng liên hệ quản trị viên."
             );
         }
-
         if (user.getStatus() == UserStatus.INACTIVE) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
@@ -64,8 +62,7 @@ public class AuthService {
 
         if (user.getStatus() == UserStatus.LOCKED) {
             // Nếu lockedUntil đã qua → tự động mở khóa
-            if (user.getLockedUntil() != null &&
-                    user.getLockedUntil().isAfter(LocalDateTime.now())) {
+            if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "Tài khoản tạm khóa do nhập sai nhiều lần. Vui lòng thử lại sau."

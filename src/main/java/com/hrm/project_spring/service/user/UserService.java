@@ -1,6 +1,7 @@
 package com.hrm.project_spring.service.user;
 
 import com.hrm.project_spring.dto.common.PageResponse;
+import com.hrm.project_spring.dto.student.StudentAllResponse;
 import com.hrm.project_spring.dto.user.*;
 import com.hrm.project_spring.entity.ClassRoom;
 import com.hrm.project_spring.entity.Role;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,7 +24,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,6 +68,18 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User không tồn tại"));
         return mapToResponse(user);
+    }
+
+    @Transactional
+    public List<StudentAllResponse> getAllStudent() {
+        return userRepository.findAllStudents().stream()
+                .map(user -> StudentAllResponse.builder()
+                        .id(user.getId())
+                        .email(user.getEmail())
+                        .username(user.getUsername())
+                        .fullName(user.getFullName())
+                        .build())
+                .toList();
     }
 
     // ======================== TÌM KIẾM / LỌC USER (UC14) ========================

@@ -265,7 +265,17 @@ public class UserController {
                         .build()
         );
     }
-
+    @PreAuthorize("hasAuthority('USER:READ')")
+    @GetMapping("/students")
+    public ResponseEntity<ApiResponse<Object>> getAllStudent(){
+        return ResponseEntity.ok(ApiResponse
+                .builder()
+                .success(true)
+                .code(200)
+                .message("Lấy danh sách student thành công")
+                .data(userService.getAllStudent())
+                .build());
+    }
     // ======================== EXPORT (UC13) ========================
 
     /**

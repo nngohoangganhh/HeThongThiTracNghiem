@@ -4,6 +4,7 @@ import com.hrm.project_spring.dto.classroom.AssignStudentsToClassRequest;
 import com.hrm.project_spring.dto.classroom.ClassRoomRequest;
 import com.hrm.project_spring.dto.classroom.ClassRoomResponse;
 import com.hrm.project_spring.dto.common.PageResponse;
+import com.hrm.project_spring.dto.student.StudentResponse;
 import com.hrm.project_spring.entity.ClassRoom;
 import com.hrm.project_spring.entity.User;
 import com.hrm.project_spring.repository.ClassRoomRepository;
@@ -148,8 +149,10 @@ public class ClassRoomService {
         return mapToResponse(classRoom);
     }
 
+
+
     @Transactional
-    public ClassRoomResponse assignStudents(Long id, AssignStudentsToClassRequest request) {
+    public ClassRoomResponse    assignStudents(Long id, AssignStudentsToClassRequest request) {
         ClassRoom classRoom = classRoomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lớp học không tồn tại"));
 
@@ -162,7 +165,7 @@ public class ClassRoomService {
 
         List<User> newStudents = students.stream()
                 .filter(s -> !existingStudentIds.contains(s.getId()))
-                .collect(Collectors.toList());
+                .toList();
 
         classRoom.getStudents().addAll(newStudents);
         classRoom = classRoomRepository.save(classRoom);
@@ -182,6 +185,10 @@ public class ClassRoomService {
     }
 
     private ClassRoomResponse mapToResponse(ClassRoom classRoom) {
+        User teacher = null;
+    if (classRoom.getTeacherId() != null) {
+        teacher = userRepository.findById(classRoom.getTeacherId()).orElseThrow(null);
+    }
         return ClassRoomResponse.builder()
                 .id(classRoom.getId())
                 .code(classRoom.getCode())
@@ -190,6 +197,7 @@ public class ClassRoomService {
                 .academicYear(classRoom.getAcademicYear())
                 .createdAt(classRoom.getCreatedAt())
                 .studentCount(classRoom.getStudents() != null ? classRoom.getStudents().size() : 0)
+                .teacherName(teacher!= null ? teacher.getFullName(): null)
                 .build();
     }
 }

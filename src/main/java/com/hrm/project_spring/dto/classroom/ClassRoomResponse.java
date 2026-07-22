@@ -14,5 +14,6 @@ public class ClassRoomResponse {
     private String description;
     private String academicYear;
     private LocalDateTime createdAt;
+    private String teacherName;
     private int studentCount;
 }

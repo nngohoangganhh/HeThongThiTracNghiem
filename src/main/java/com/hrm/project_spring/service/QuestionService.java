@@ -60,6 +60,7 @@ public class QuestionService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long currentUserId = userRepository.findByUsername(username)
                 .map(u -> u.getId())
+                //.map(User::getId())
                 .orElse(null);
 
         // Mapping: QuestionRequest.questionType (String) → QuestionType enum

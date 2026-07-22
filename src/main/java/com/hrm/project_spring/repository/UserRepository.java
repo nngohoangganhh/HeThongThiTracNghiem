@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -61,24 +62,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * includeDeleted: nếu false → loại bỏ user có status=DELETED.
      */
     @Query("""
-        SELECT DISTINCT u FROM User u
-        LEFT JOIN u.roles r
-        LEFT JOIN u.classRooms c
-        WHERE (
-            :keyword IS NULL OR :keyword = '' OR
-            LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-            LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-            LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-            LOWER(u.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-            LOWER(u.employeeCode) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        )
-        AND (:status IS NULL OR u.status = :status)
-        AND (:roleId IS NULL OR r.id = :roleId)
-        AND (:classId IS NULL OR c.id = :classId)
-        AND (:includeDeleted = true OR u.status <> com.hrm.project_spring.enums.UserStatus.DELETED)
-        AND (:createdFrom IS NULL OR u.createdAt >= :createdFrom)
-        AND (:createdTo IS NULL OR u.createdAt <= :createdTo)
-    """)
+                SELECT DISTINCT u FROM User u
+                LEFT JOIN u.roles r
+                LEFT JOIN u.classRooms c
+                WHERE (
+                    :keyword IS NULL OR :keyword = '' OR
+                    LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+                    LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+                    LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+                    LOWER(u.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+                    LOWER(u.employeeCode) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                )
+                AND (:status IS NULL OR u.status = :status)
+                AND (:roleId IS NULL OR r.id = :roleId)
+                AND (:classId IS NULL OR c.id = :classId)
+                AND (:includeDeleted = true OR u.status <> com.hrm.project_spring.enums.UserStatus.DELETED)
+                AND (:createdFrom IS NULL OR u.createdAt >= :createdFrom)
+                AND (:createdTo IS NULL OR u.createdAt <= :createdTo)
+            """)
     Page<User> searchUsers(
             @Param("keyword") String keyword,
             @Param("status") UserStatus status,
@@ -100,17 +101,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * UC11 Export UC13: Tìm users với filter.
      */
     @Query("""
-        SELECT DISTINCT u FROM User u
-        LEFT JOIN u.roles r
-        LEFT JOIN u.classRooms c
-        WHERE (:status IS NULL OR u.status = :status)
-        AND (:roleId IS NULL OR r.id = :roleId)
-        AND (:includeDeleted = true OR u.status <> com.hrm.project_spring.enums.UserStatus.DELETED)
-        ORDER BY u.createdAt DESC
-    """)
+                SELECT DISTINCT u FROM User u
+                LEFT JOIN u.roles r
+                LEFT JOIN u.classRooms c
+                WHERE (:status IS NULL OR u.status = :status)
+                AND (:roleId IS NULL OR r.id = :roleId)
+                AND (:includeDeleted = true OR u.status <> com.hrm.project_spring.enums.UserStatus.DELETED)
+                ORDER BY u.createdAt DESC
+            """)
     java.util.List<User> findAllForExport(
             @Param("status") UserStatus status,
             @Param("roleId") Long roleId,
             @Param("includeDeleted") boolean includeDeleted
     );
+
+    @Query(""" 
+            SELECT u 
+            FROM User u 
+            JOIN u.roles r 
+            WHERE r.code ='STUDENT'
+            """)
+    List<User> findAllStudents();
 }

@@ -33,6 +33,8 @@ public class ClassRoomController {
     }
 
 
+
+
     @PreAuthorize("hasAuthority('CLASS:READ')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ClassRoomResponse>> getClassRoom(@PathVariable Long id ){
