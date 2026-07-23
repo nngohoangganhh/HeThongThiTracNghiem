@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiResponse<String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         Throwable cause = ex.getMostSpecificCause();
-        String detail = (cause != null) ? cause.getMessage() : ex.getMessage();
+        String detail = cause.getMessage();
         ApiResponse<String> response = new ApiResponse<>(
                 false,
                 HttpStatus.CONFLICT.value(),

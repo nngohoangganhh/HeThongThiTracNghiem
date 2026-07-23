@@ -141,8 +141,8 @@ public class TestService {
         // Map questions + answers (không expose isCorrect)
         List<TestResponse.QuestionDto> questionDtos = test.getQuestions() == null ? List.of() :
             test.getQuestions().stream().map(q -> {
-                List<TestResponse.AnswerDto> answerDtos = q.getAnswers() == null ? List.of() :
-                    q.getAnswers().stream().map(a ->
+                List<TestResponse.AnswerDto> answerDtos = q.getQuestionOptions() == null ? List.of() :
+                    q.getQuestionOptions().stream().map(a ->
                         TestResponse.AnswerDto.builder()
                             .id(a.getId())
                             .content(a.getContent())

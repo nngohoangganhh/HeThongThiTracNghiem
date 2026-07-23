@@ -33,12 +33,10 @@ public class ClassRoomService {
 
     @Transactional
     public ClassRoomResponse createClassRoom(ClassRoomRequest request) {
-        // UC15-E1: 409 CONFLICT khi mã lớp đã tồn tại
         if (classRoomRepository.existsByCode(request.getCode())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Mã lớp đã tồn tại");
         }
 
-        // UC15: Validate teacherId nếu có
         Long teacherId = null;
         if (request.getTeacherId() != null) {
             User teacher = userRepository.findById(request.getTeacherId())
@@ -68,22 +66,18 @@ public class ClassRoomService {
         ClassRoom classRoom = classRoomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lớp học không tồn tại"));
 
-        // UC15-A1: Không cho đổi mã lớp nếu đã có exam gán
         boolean codeChanged = !classRoom.getCode().equals(request.getCode());
         if (codeChanged) {
-            // Kiểm tra đã có kỳ thi gán vào lớp này chưa (qua exam_students)
             boolean hasExam = examRepository.existsByStudentId(classRoom.getId());
             if (hasExam) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Không thể đổi mã lớp vì lớp này đã được gán vào kỳ thi");
             }
-            // Kiểm tra mã lớp mới không bị trùng
             if (classRoomRepository.existsByCode(request.getCode())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Mã lớp đã tồn tại");
             }
         }
 
-        // Validate teacherId nếu có
         Long teacherId = classRoom.getTeacherId();
         if (request.getTeacherId() != null) {
             User teacher = userRepository.findById(request.getTeacherId())
@@ -106,20 +100,16 @@ public class ClassRoomService {
         return mapToResponse(classRoom);
     }
 
-    /**
-     * UC15-E2: Chỉ xóa lớp khi không còn sinh viên nào.
-     */
+
     @Transactional
     public void deleteClassRoom(Long id) {
         ClassRoom classRoom = classRoomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lớp học không tồn tại"));
 
-        // UC15-A2: Từ chối nếu lớp còn sinh viên
         if (classRoom.getStudents() != null && !classRoom.getStudents().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Không thể xóa lớp học còn " + classRoom.getStudents().size() + " sinh viên. Hãy gỡ sinh viên trước.");
         }
-
         classRoomRepository.delete(classRoom);
     }
 
@@ -148,9 +138,6 @@ public class ClassRoomService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp học"));
         return mapToResponse(classRoom);
     }
-
-
-
     @Transactional
     public ClassRoomResponse    assignStudents(Long id, AssignStudentsToClassRequest request) {
         ClassRoom classRoom = classRoomRepository.findById(id)
@@ -158,7 +145,6 @@ public class ClassRoomService {
 
         List<User> students = userRepository.findAllById(request.getStudentIds());
 
-        // UC15: Check duplicate trước khi add
         Set<Long> existingStudentIds = classRoom.getStudents().stream()
                 .map(User::getId)
                 .collect(Collectors.toSet());

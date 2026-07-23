@@ -76,13 +76,16 @@ public class Question {
 
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Answer> answers = new ArrayList<>();
+    private List<QuestionOption> questionOptions = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
     private Long createdBy;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+
 }
